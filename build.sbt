@@ -1,4 +1,4 @@
-name := """hello-play-backbone"""
+name := """politickle"""
 
 version := "1.0-SNAPSHOT"
 
