@@ -14,6 +14,8 @@ libraryDependencies ++= Seq(
   // WebJars pull in client-side web libraries
   "org.webjars" %% "webjars-play" % "2.2.0",
   "org.webjars" % "bootstrap" % "2.3.1",
+  "com.typesafe.play" %% "play-slick" % "0.5.0.8",
+  "mysql" % "mysql-connector-java" % "5.1.27",
   // Add your own project dependencies in the form:
   // "group" % "artifact" % "version"
   "securesocial" %% "securesocial" % "2.1.2"
