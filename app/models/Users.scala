@@ -2,12 +2,15 @@ package models
 
 import java.sql.Date
 import play.api.db.slick.Config.driver.simple._
-import securesocial.core.OAuth2Info
+import play.api.db.slick.DB
+
+import securesocial.core.{Identity, OAuth2Info}
+
 
 case class User(
   id: Long,
   twitterId: Long,
-  twitterHandle: String,
+  twitterHandle: Option[String],
   twitterName: String,
   twitterAvatarUrl: Option[String],
   createdAt: Date,
@@ -43,5 +46,6 @@ object Users extends Table[User]("USERS") {
 
   def uniqueTwitterHandle = index("unique_twitter_handle", twitterHandle, unique = true)
 
-  def * = id ~ twitterId ~ twitterHandle ~ twitterName ~ twitterAvatarUrl.? ~ createdAt ~ updatedAt ~ accessToken.? <> (User.apply _, User.unapply _)
+  def * = id ~ twitterId ~ twitterHandle.? ~ twitterName.? ~ twitterAvatarUrl.? ~ createdAt ~ updatedAt ~ accessToken.? <> (User.apply _, User.unapply _)
+
 }
