@@ -2,6 +2,7 @@ package models
 
 import java.sql.Date
 import play.api.db.slick.Config.driver.simple._
+import securesocial.core.OAuth2Info
 
 case class User(
   id: Long,
@@ -11,10 +12,9 @@ case class User(
   twitterAvatarUrl: Option[String],
   createdAt: Date,
   updatedAt: Date,
-  authToken: Option[String],
-  userSecret: Option[String])
+  accessToken: Option[String])
 
-class Users extends Table[User]("USERS") {
+object Users extends Table[User]("USERS") {
 
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
@@ -30,9 +30,18 @@ class Users extends Table[User]("USERS") {
 
   def updatedAt = column[Date]("updated_at", O.NotNull)
 
-  def authToken = column[String]("auth_token", O.Nullable)
+  def accessToken = column[String]("access_token", O.Nullable)
 
-  def userSecret = column[String]("user_secret", O.Nullable)
+  implicit def tuple2OAuth2Info(tuple: (Option[String])): Option[OAuth2Info] = {
+    tuple match {
+      case (Some(accessToken)) => Some(OAuth2Info(accessToken, Some("bearer"), None, None))
+      case _ => None
+    }
+  }
 
-  def * = id ~ twitterId ~ twitterHandle ~ twitterName ~ twitterAvatarUrl.? ~ createdAt ~ updatedAt ~ authToken.? ~ userSecret.? <> (User.apply _, User.unapply _)
+  def uniqueTwitterId = index("unique_twitter_id", twitterId, unique = true)
+
+  def uniqueTwitterHandle = index("unique_twitter_handle", twitterHandle, unique = true)
+
+  def * = id ~ twitterId ~ twitterHandle ~ twitterName ~ twitterAvatarUrl.? ~ createdAt ~ updatedAt ~ accessToken.? <> (User.apply _, User.unapply _)
 }
