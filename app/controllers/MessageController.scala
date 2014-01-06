@@ -1,6 +1,6 @@
 package controllers
 
-import models.Cards
+import models.{Choices, Polls, Users}
 import play.api.Play.current
 import play.api.mvc.{Action, Controller}
 import play.api.libs.json.Json
@@ -18,14 +18,14 @@ object MessageController extends Controller {
 
   implicit val fooWrites = Json.writes[Message]
 
-  val Cards = new Cards
-
-  Logger.debug(Cards.ddl.createStatements.mkString)
+  Logger.debug("==========DDL statements begin==========")
+  Logger.debug(Users.ddl.createStatements.mkString)
+  Logger.debug(Polls.ddl.createStatements.mkString)
+  Logger.debug(Choices.ddl.createStatements.mkString)
+  Logger.debug("==========DDL statements end==========")
 
   def getMessage = DBAction {
     implicit rs =>
-      val cards = Query(Cards)
-      Logger.debug(cards.selectStatement)
-      Ok(Json.toJson(Message("Backbone Hello World: " + cards.list.length)))
+      Ok(Json.toJson(Message("Backbone Hello World: " + Users.count)))
   }
 }
