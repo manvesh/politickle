@@ -1,3 +1,7 @@
-@(poll: Long)
-<p>Find me in app/views/Polls/show.scala.html</p>
-<p>@poll</p>
+@(poll: Poll)
+<dl>
+  <dt>Description</dt>
+  <dd>@poll.description</dd>
+  <dt>Created by</dt>
+  <dd>@poll.ownerId</dd>
+</dl>
