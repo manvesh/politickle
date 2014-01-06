@@ -7,20 +7,24 @@ case class User(
   id: Long,
   twitterId: Long,
   twitterHandle: String,
-  name: String,
+  twitterName: String,
+  twitterAvatarUrl: Option[String],
   createdAt: Date,
   updatedAt: Date,
-  authToken: String,
-  userSecret: String)
+  authToken: Option[String],
+  userSecret: Option[String])
 
 class Users extends Table[User]("USERS") {
+
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
   def twitterId = column[Long]("twitter_id", O.NotNull)
 
   def twitterHandle = column[String]("twitter_handle", O.NotNull)
 
-  def name = column[String]("name", O.NotNull)
+  def twitterName = column[String]("twitter_name", O.NotNull)
+
+  def twitterAvatarUrl = column[String]("twitter_avatar_url", O.Nullable)
 
   def createdAt = column[Date]("created_at", O.NotNull)
 
@@ -30,5 +34,5 @@ class Users extends Table[User]("USERS") {
 
   def userSecret = column[String]("user_secret", O.Nullable)
 
-  def * = id ~ twitterId ~ twitterHandle ~ name ~ createdAt ~ updatedAt ~ authToken ~ userSecret <>(User.apply _, User.unapply _)
+  def * = id ~ twitterId ~ twitterHandle ~ twitterName ~ twitterAvatarUrl.? ~ createdAt ~ updatedAt ~ authToken.? ~ userSecret.? <> (User.apply _, User.unapply _)
 }
