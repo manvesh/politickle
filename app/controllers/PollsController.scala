@@ -14,7 +14,7 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
 
      */
     val poll = 0
-    Ok(views.html.Polls.show(poll))
+    Ok(views.html.Polls.show(id))
   }
 
   def create = SecuredAction { implicit request =>
