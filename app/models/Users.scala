@@ -56,6 +56,8 @@ trait UsersComponent {
 
     val byTwitterHandle = createFinderBy(_.twitterHandle)
 
+    val byToken = createFinderBy(_.accessToken)
+
     def autoInc = * returning id
   }
 }
@@ -69,6 +71,9 @@ object Users extends DAO {
 
   def findByTwitterId(twId: String)(implicit s: Session): Option[User] =
     Users.byTwitterId(twId).firstOption
+
+  def findByToken(token: String)(implicit s: Session): Option[User] =
+    Users.byToken(token).firstOption
 
   def count(implicit s: Session): Int =
     Query(Users.length).first
