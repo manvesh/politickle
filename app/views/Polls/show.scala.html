@@ -1,7 +1,14 @@
 @(poll: Poll)
+
+@layout(poll.description) {
 <dl>
   <dt>Description</dt>
   <dd>@poll.description</dd>
+  @if(!poll.hashTag.isEmpty) {
+    <dt>Hash Tag</dt>
+    <dd>#@poll.hashTag</dd>
+  }
   <dt>Created by</dt>
   <dd>@poll.ownerId</dd>
 </dl>
+}

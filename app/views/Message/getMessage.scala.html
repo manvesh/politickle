@@ -1,6 +1,8 @@
 @(sqlStatements: List[String])
 
-@sqlStatements.map { stmt =>
-<pre><code>@stmt</code></pre>
+@layout() {
+  @sqlStatements.map { stmt =>
+    <pre><code>@stmt</code></pre>
+  }
 }
 
