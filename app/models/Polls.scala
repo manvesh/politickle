@@ -76,7 +76,7 @@ object Polls extends DAO {
   }
 
   def update(id: Long, poll: Poll)(implicit s: Session) {
-    val PollToUpdate: Poll = poll.copy(id)
+    val PollToUpdate: Poll = poll.copy(Some(id))
     Polls.where(_.id === id).update(PollToUpdate)
   }
 

@@ -60,7 +60,7 @@ object Users extends DAO {
   }
 
   def update(id: Long, user: User)(implicit s: Session) {
-    val UserToUpdate: User = user.copy(id)
+    val UserToUpdate: User = user.copy(Some(id))
     Users.where(_.id === id).update(UserToUpdate)
   }
 

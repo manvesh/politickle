@@ -73,7 +73,7 @@ object Choices extends DAO {
   }
 
   def update(id: Long, choice: Choice)(implicit s: Session) {
-    val ChoiceToUpdate: Choice = choice.copy(id)
+    val ChoiceToUpdate: Choice = choice.copy(Some(id))
     Choices.where(_.id === id).update(ChoiceToUpdate)
   }
 
