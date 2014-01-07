@@ -21,10 +21,10 @@ object MessageController extends Controller {
   def getMessage = DBAction {
     implicit rs =>
       Ok(views.html.Message.getMessage(List(
-        Users.ddl.createStatements.mkString,
-        Polls.ddl.createStatements.mkString,
-        Choices.ddl.createStatements.mkString,
-        Responses.ddl.createStatements.mkString
+        Users.ddl.createStatements.mkString(";\n"),
+        Polls.ddl.createStatements.mkString(";\n"),
+        Choices.ddl.createStatements.mkString(";\n"),
+        Responses.ddl.createStatements.mkString(";\n")
       )))
   }
 }

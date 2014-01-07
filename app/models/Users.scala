@@ -46,6 +46,10 @@ trait UsersComponent {
 
     def * = id.? ~ twitterId ~ twitterName ~ twitterHandle.? ~ twitterAvatarUrl.? ~ createdAt.? ~ updatedAt.? ~ accessToken.? ~ secret.? <>(User.apply _, User.unapply _)
 
+    def twitterNameIndex = index("twitter_name_index", twitterName)
+
+    def twitterIdIndex = index("twitter_id_index", twitterId, unique = true)
+
     val byId = createFinderBy(_.id)
 
     val byTwitterId = createFinderBy(_.twitterId)

@@ -28,7 +28,7 @@ class UserService(application: Application) extends UserServicePlugin(applicatio
           None,
           user.identityId.userId,
           user.fullName,
-          Some(user.identityId.userId),
+          Some(user.firstName),
           user.avatarUrl,
           None, None,
           accessToken = user.oAuth1Info.map { _.token },
