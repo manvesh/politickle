@@ -10,8 +10,8 @@ case class Choice(
   id: Option[Long],
   pollId: Long,
   description: String,
-  createdAt: Timestamp,
-  updatedAt: Timestamp
+  createdAt: Option[Timestamp],
+  updatedAt: Option[Timestamp]
   )
 
 trait ChoicesComponent {
@@ -28,11 +28,11 @@ trait ChoicesComponent {
 
     def description = column[String]("description", O.NotNull)
 
-    def createdAt = column[Timestamp]("created_at", O.NotNull)
+    def createdAt = column[Timestamp]("created_at", O.Nullable)
 
-    def updatedAt = column[Timestamp]("updated_at", O.NotNull)
+    def updatedAt = column[Timestamp]("updated_at", O.Nullable)
 
-    def * = id.? ~ pollId ~ description ~ createdAt ~ updatedAt <>(Choice.apply _, Choice.unapply _)
+    def * = id.? ~ pollId ~ description ~ createdAt.? ~ updatedAt.? <>(Choice.apply _, Choice.unapply _)
 
     def autoInc = * returning id
 
@@ -69,11 +69,12 @@ object Choices extends DAO {
   }
 
   def insert(choice: Choice)(implicit s: Session) {
+    val choiceToInsert = choice.copy(createdAt = Some(currentTimestamp))
     Choices.autoInc.insert(choice)
   }
 
   def update(id: Long, choice: Choice)(implicit s: Session) {
-    val ChoiceToUpdate: Choice = choice.copy(Some(id))
+    val ChoiceToUpdate: Choice = choice.copy(Some(id), updatedAt = Some(currentTimestamp))
     Choices.where(_.id === id).update(ChoiceToUpdate)
   }
 

@@ -11,8 +11,8 @@ case class Poll(
   ownerId: Long,
   description: String,
   hashTag: Option[String],
-  createdAt: Timestamp,
-  updatedAt: Timestamp)
+  createdAt: Option[Timestamp],
+  updatedAt: Option[Timestamp])
 
 trait PollsComponent {
   self: UsersComponent =>
@@ -30,11 +30,11 @@ trait PollsComponent {
 
     def hashTag = column[String]("hash_tag", O.Nullable)
 
-    def createdAt = column[Timestamp]("created_at", O.NotNull)
+    def createdAt = column[Timestamp]("created_at", O.Nullable)
 
-    def updatedAt = column[Timestamp]("updated_at", O.NotNull)
+    def updatedAt = column[Timestamp]("updated_at", O.Nullable)
 
-    def * = id.? ~ ownerId ~ description ~ hashTag.? ~ createdAt ~ updatedAt <>(Poll.apply _, Poll.unapply _)
+    def * = id.? ~ ownerId ~ description ~ hashTag.? ~ createdAt.? ~ updatedAt.? <>(Poll.apply _, Poll.unapply _)
 
     def autoInc = * returning id
 
@@ -72,11 +72,12 @@ object Polls extends DAO {
   }
 
   def insert(poll: Poll)(implicit s: Session) {
-    Polls.autoInc.insert(poll)
+    val pollToInsert = poll.copy(createdAt = Some(currentTimestamp))
+    Polls.autoInc.insert(pollToInsert)
   }
 
   def update(id: Long, poll: Poll)(implicit s: Session) {
-    val PollToUpdate: Poll = poll.copy(Some(id))
+    val PollToUpdate: Poll = poll.copy(Some(id), updatedAt = Some(currentTimestamp))
     Polls.where(_.id === id).update(PollToUpdate)
   }
 

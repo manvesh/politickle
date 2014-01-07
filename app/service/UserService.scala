@@ -30,11 +30,9 @@ class UserService(application: Application) extends UserServicePlugin(applicatio
           user.fullName,
           Some(user.identityId.userId),
           user.avatarUrl,
-          time,
-          time,
-          accessToken = user.oAuth2Info.map {
-            _.accessToken
-          }
+          None, None,
+          accessToken = user.oAuth1Info.map { _.token },
+          secret = user.oAuth1Info.map { _.secret }
         )
       Users.insert(userToSave)
       user

@@ -17,9 +17,10 @@ case class User(
   twitterName: String,
   twitterHandle: Option[String],
   twitterAvatarUrl: Option[String],
-  createdAt: Timestamp,
-  updatedAt: Timestamp,
-  accessToken: Option[String])
+  createdAt: Option[Timestamp] = None,
+  updatedAt: Option[Timestamp] = None,
+  accessToken: Option[String],
+  secret: Option[String])
 
 trait UsersComponent {
   val Users: Users
@@ -35,16 +36,21 @@ trait UsersComponent {
 
     def twitterAvatarUrl = column[String]("twitter_avatar_url", O.Nullable)
 
-    def createdAt = column[Timestamp]("created_at", O.NotNull)
+    def createdAt = column[Timestamp]("created_at", O.Nullable)
 
-    def updatedAt = column[Timestamp]("updated_at", O.NotNull)
+    def updatedAt = column[Timestamp]("updated_at", O.Nullable)
 
     def accessToken = column[String]("access_token", O.Nullable)
 
-    def * = id.? ~ twitterId ~ twitterName ~ twitterHandle.? ~ twitterAvatarUrl.? ~ createdAt ~ updatedAt ~ accessToken.? <>(User.apply _, User.unapply _)
+    def secret = column[String]("secret", O.Nullable)
+
+    def * = id.? ~ twitterId ~ twitterName ~ twitterHandle.? ~ twitterAvatarUrl.? ~ createdAt.? ~ updatedAt.? ~ accessToken.? ~ secret.? <>(User.apply _, User.unapply _)
 
     val byId = createFinderBy(_.id)
+
     val byTwitterId = createFinderBy(_.twitterId)
+
+    val byTwitterHandle = createFinderBy(_.twitterHandle)
 
     def autoInc = * returning id
   }
@@ -63,15 +69,14 @@ object Users extends DAO {
   def count(implicit s: Session): Int =
     Query(Users.length).first
 
-
   def insert(user: User)(implicit s: Session) {
-    val userToInsert: User = user.copy(createdAt = new Timestamp(new Date().getTime))
+    val userToInsert: User = user.copy(createdAt = Some(currentTimestamp))
     Users.autoInc.insert(userToInsert)
   }
 
   def update(id: Long, user: User)(implicit s: Session) {
-    val UserToUpdate: User = user.copy(id = Some(id), updatedAt = new Timestamp(new Date().getTime))
-    Users.where(_.id === id).update(UserToUpdate)
+    val userToUpdate: User = user.copy(id = Some(id), updatedAt = Some(currentTimestamp))
+    Users.where(_.id === id).update(userToUpdate)
   }
 
   def delete(id: Long)(implicit s: Session) {
