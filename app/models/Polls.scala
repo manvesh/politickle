@@ -28,7 +28,7 @@ trait PollsComponent {
 
     def description = column[String]("description", O.NotNull)
 
-    def hashTag = column[String]("name", O.Nullable)
+    def hashTag = column[String]("hash_tag", O.Nullable)
 
     def createdAt = column[Date]("created_at", O.NotNull)
 
