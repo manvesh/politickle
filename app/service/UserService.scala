@@ -16,8 +16,8 @@ class UserService(application: Application) extends UserServicePlugin(applicatio
 
   def find(id: IdentityId): Option[Identity] = {
     play.api.db.slick.DB.withSession{ implicit s: Session =>
-      val userId = id.userId.toLong
-      Users.findById(userId) map { UserSecureSocialHelper.getIdentity }
+      val twitterId = id.userId
+      Users.findByTwitterId(twitterId) map { UserSecureSocialHelper.getIdentity }
     }
   }
 
@@ -26,7 +26,7 @@ class UserService(application: Application) extends UserServicePlugin(applicatio
     play.api.db.slick.DB.withSession{ implicit s: Session =>
       val userToSave = User(
           None,
-          user.identityId.userId.toLong,
+          user.identityId.userId,
           user.fullName,
           Some(user.identityId.userId),
           user.avatarUrl,

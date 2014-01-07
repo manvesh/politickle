@@ -13,7 +13,7 @@ import securesocial.core.providers.TwitterProvider
 
 case class User(
   id: Option[Long],
-  twitterId: Long,
+  twitterId: String,
   twitterName: String,
   twitterHandle: Option[String],
   twitterAvatarUrl: Option[String],
@@ -27,7 +27,7 @@ trait UsersComponent {
   class Users extends Table[User]("USERS") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-    def twitterId = column[Long]("twitter_id", O.NotNull)
+    def twitterId = column[String]("twitter_id", O.NotNull)
 
     def twitterName = column[String]("twitter_name", O.NotNull)
 
@@ -44,6 +44,7 @@ trait UsersComponent {
     def * = id.? ~ twitterId ~ twitterName ~ twitterHandle.? ~ twitterAvatarUrl.? ~ createdAt ~ updatedAt ~ accessToken.? <>(User.apply _, User.unapply _)
 
     val byId = createFinderBy(_.id)
+    val byTwitterId = createFinderBy(_.twitterId)
 
     def autoInc = * returning id
   }
@@ -55,6 +56,9 @@ object Users extends DAO {
 
   def findById(id: Long)(implicit s: Session): Option[User] =
     Users.byId(id).firstOption
+
+  def findByTwitterId(twId: String)(implicit s: Session): Option[User] =
+    Users.byTwitterId(twId).firstOption
 
   def count(implicit s: Session): Int =
     Query(Users.length).first
@@ -78,7 +82,7 @@ object Users extends DAO {
 object UserSecureSocialHelper {
 
   def getIdentity(user: User): Identity = new Identity {
-      def identityId: IdentityId = IdentityId(user.twitterId.toString, TwitterProvider.Id)
+      def identityId: IdentityId = IdentityId(user.twitterId, TwitterProvider.Id)
       def firstName: String = ""
       def lastName: String = ""
       def fullName: String = user.twitterName
