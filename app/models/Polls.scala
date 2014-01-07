@@ -1,6 +1,6 @@
 package models
 
-import java.sql.Date
+import java.sql.Timestamp
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import slick.lifted.{Join, MappedTypeMapper}
@@ -11,8 +11,8 @@ case class Poll(
   ownerId: Long,
   description: String,
   hashTag: Option[String],
-  createdAt: Date,
-  updatedAt: Date)
+  createdAt: Timestamp,
+  updatedAt: Timestamp)
 
 trait PollsComponent {
   self: UsersComponent =>
@@ -30,9 +30,9 @@ trait PollsComponent {
 
     def hashTag = column[String]("hash_tag", O.Nullable)
 
-    def createdAt = column[Date]("created_at", O.NotNull)
+    def createdAt = column[Timestamp]("created_at", O.NotNull)
 
-    def updatedAt = column[Date]("updated_at", O.NotNull)
+    def updatedAt = column[Timestamp]("updated_at", O.NotNull)
 
     def * = id.? ~ ownerId ~ description ~ hashTag.? ~ createdAt ~ updatedAt <>(Poll.apply _, Poll.unapply _)
 

@@ -1,6 +1,6 @@
 package models
 
-import java.sql.Date
+import java.sql.Timestamp
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import slick.lifted.{Join, MappedTypeMapper}
@@ -10,8 +10,8 @@ case class Choice(
   id: Option[Long],
   pollId: Long,
   description: String,
-  createdAt: Date,
-  updatedAt: Date
+  createdAt: Timestamp,
+  updatedAt: Timestamp
   )
 
 trait ChoicesComponent {
@@ -28,9 +28,9 @@ trait ChoicesComponent {
 
     def description = column[String]("description", O.NotNull)
 
-    def createdAt = column[Date]("created_at", O.NotNull)
+    def createdAt = column[Timestamp]("created_at", O.NotNull)
 
-    def updatedAt = column[Date]("updated_at", O.NotNull)
+    def updatedAt = column[Timestamp]("updated_at", O.NotNull)
 
     def * = id.? ~ pollId ~ description ~ createdAt ~ updatedAt <>(Choice.apply _, Choice.unapply _)
 
