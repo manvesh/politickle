@@ -9,7 +9,7 @@ import play.api.Play.current
 import models.Polls
 
 object PollsController extends Controller with securesocial.core.SecureSocial {
-  def show(id: Long) = DBAction { implicit request =>
+  def show(id: Long) = DBAction { implicit session =>
     Polls.findById(id) map { poll =>
       Ok(views.html.Polls.show(poll))
     } getOrElse(NotFound)
