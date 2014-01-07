@@ -18,14 +18,8 @@ object MessageController extends Controller {
 
   implicit val fooWrites = Json.writes[Message]
 
-  Logger.debug("==========DDL statements begin==========")
-  Logger.debug(Users.ddl.createStatements.mkString)
-  Logger.debug(Polls.ddl.createStatements.mkString)
-  Logger.debug(Choices.ddl.createStatements.mkString)
-  Logger.debug("==========DDL statements end==========")
-
   def getMessage = DBAction {
     implicit rs =>
-      Ok(Json.toJson(Message("Backbone Hello World: " + Users.count)))
+      Ok(views.html.Message.getMessage(List(Users.ddl.createStatements.mkString, Polls.ddl.createStatements.mkString, Choices.ddl.createStatements.mkString)))
   }
 }
