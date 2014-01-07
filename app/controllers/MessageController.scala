@@ -1,6 +1,6 @@
 package controllers
 
-import models.{Choices, Polls, Users}
+import models.{Responses, Choices, Polls, Users}
 import play.api.Play.current
 import play.api.mvc.{Action, Controller}
 import play.api.libs.json.Json
@@ -20,6 +20,11 @@ object MessageController extends Controller {
 
   def getMessage = DBAction {
     implicit rs =>
-      Ok(views.html.Message.getMessage(List(Users.ddl.createStatements.mkString, Polls.ddl.createStatements.mkString, Choices.ddl.createStatements.mkString)))
+      Ok(views.html.Message.getMessage(List(
+        Users.ddl.createStatements.mkString,
+        Polls.ddl.createStatements.mkString,
+        Choices.ddl.createStatements.mkString,
+        Responses.ddl.createStatements.mkString
+      )))
   }
 }
