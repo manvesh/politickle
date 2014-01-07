@@ -7,7 +7,7 @@ import slick.lifted.{Join, MappedTypeMapper}
 import scala.slick.lifted.ForeignKeyAction
 
 case class Choice(
-  id: Long,
+  id: Option[Long],
   pollId: Long,
   description: String,
   createdAt: Timestamp,
@@ -32,7 +32,7 @@ trait ChoicesComponent {
 
     def updatedAt = column[Timestamp]("updated_at", O.NotNull)
 
-    def * = id ~ pollId ~ description ~ createdAt ~ updatedAt <>(Choice.apply _, Choice.unapply _)
+    def * = id.? ~ pollId ~ description ~ createdAt ~ updatedAt <>(Choice.apply _, Choice.unapply _)
 
     def autoInc = * returning id
 
@@ -73,7 +73,7 @@ object Choices extends DAO {
   }
 
   def update(id: Long, choice: Choice)(implicit s: Session) {
-    val ChoiceToUpdate: Choice = choice.copy(id)
+    val ChoiceToUpdate: Choice = choice.copy(Some(id))
     Choices.where(_.id === id).update(ChoiceToUpdate)
   }
 

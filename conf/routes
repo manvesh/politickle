@@ -34,4 +34,4 @@ GET     /not-authorized             securesocial.controllers.ProviderController.
 GET     /polls/new                  controllers.PollsController.newPoll
 GET     /polls/:id                  controllers.PollsController.show(id: Long)
 POST    /polls                      controllers.PollsController.create
-POST    /polls/:id/response         controllers.ResponsesController.create(id: Long)
+POST    /polls/:id/responses         controllers.ResponsesController.create(id: Long)
