@@ -1,51 +1,70 @@
 package models
 
 import java.sql.Date
+import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
-import play.api.db.slick.DB
-
-import securesocial.core.{Identity, OAuth2Info}
 
 
 case class User(
-  id: Long,
+  id: Option[Long],
   twitterId: Long,
-  twitterHandle: Option[String],
   twitterName: String,
+  twitterHandle: Option[String],
   twitterAvatarUrl: Option[String],
   createdAt: Date,
   updatedAt: Date,
   accessToken: Option[String])
 
-object Users extends Table[User]("USERS") {
+trait UsersComponent {
+  val Users: Users
 
-  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  class Users extends Table[User]("USERS") {
+    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-  def twitterId = column[Long]("twitter_id", O.NotNull)
+    def twitterId = column[Long]("twitter_id", O.NotNull)
 
-  def twitterHandle = column[String]("twitter_handle", O.NotNull)
+    def twitterName = column[String]("twitter_name", O.NotNull)
 
-  def twitterName = column[String]("twitter_name", O.NotNull)
+    def twitterHandle = column[String]("twitter_handle", O.Nullable)
 
-  def twitterAvatarUrl = column[String]("twitter_avatar_url", O.Nullable)
+    def twitterAvatarUrl = column[String]("twitter_avatar_url", O.Nullable)
 
-  def createdAt = column[Date]("created_at", O.NotNull)
+    def createdAt = column[Date]("created_at", O.NotNull)
 
-  def updatedAt = column[Date]("updated_at", O.NotNull)
+    def updatedAt = column[Date]("updated_at", O.NotNull)
 
-  def accessToken = column[String]("access_token", O.Nullable)
+    def accessToken = column[String]("access_token", O.Nullable)
 
-  implicit def tuple2OAuth2Info(tuple: (Option[String])): Option[OAuth2Info] = {
-    tuple match {
-      case (Some(accessToken)) => Some(OAuth2Info(accessToken, Some("bearer"), None, None))
-      case _ => None
-    }
+    def * = id.? ~ twitterId ~ twitterName ~ twitterHandle.? ~ twitterAvatarUrl.? ~ createdAt ~ updatedAt ~ accessToken.? <>(User.apply _, User.unapply _)
+
+    val byId = createFinderBy(_.id)
+
+    def autoInc = * returning id
   }
 
-  def uniqueTwitterId = index("unique_twitter_id", twitterId, unique = true)
+}
 
-  def uniqueTwitterHandle = index("unique_twitter_handle", twitterHandle, unique = true)
+object Users extends DAO {
 
-  def * = id ~ twitterId ~ twitterHandle.? ~ twitterName.? ~ twitterAvatarUrl.? ~ createdAt ~ updatedAt ~ accessToken.? <> (User.apply _, User.unapply _)
+  def ddl = Users.ddl
 
+  def findById(id: Long)(implicit s: Session): Option[User] =
+    Users.byId(id).firstOption
+
+  def count(implicit s: Session): Int =
+    Query(Users.length).first
+
+
+  def insert(user: User)(implicit s: Session) {
+    Users.autoInc.insert(user)
+  }
+
+  def update(id: Long, user: User)(implicit s: Session) {
+    val UserToUpdate: User = user.copy(id)
+    Users.where(_.id === id).update(UserToUpdate)
+  }
+
+  def delete(id: Long)(implicit s: Session) {
+    Users.where(_.id === id).delete
+  }
 }
