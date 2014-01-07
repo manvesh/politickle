@@ -79,7 +79,7 @@ object Users extends DAO {
     Query(Users.length).first
 
   def insert(user: User)(implicit s: Session) {
-    val userToInsert: User = user.copy(createdAt = Some(currentTimestamp))
+    val userToInsert: User = user.copy(createdAt = Some(currentTimestamp), updatedAt = Some(currentTimestamp))
     Users.autoInc.insert(userToInsert)
   }
 
