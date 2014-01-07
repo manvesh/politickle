@@ -1,6 +1,6 @@
 package models
 
-import java.sql.Date
+import java.sql.Timestamp
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
 import slick.lifted.{ Join, MappedTypeMapper }
@@ -12,8 +12,8 @@ case class User(
   twitterHandle: String,
   twitterName: String,
   twitterAvatarUrl: Option[String],
-  createdAt: Date,
-  updatedAt: Date,
+  createdAt: Timestamp,
+  updatedAt: Timestamp,
   authToken: Option[String],
   userSecret: Option[String])
 
@@ -31,9 +31,9 @@ trait UsersComponent {
 
     def twitterAvatarUrl = column[String]("twitter_avatar_url", O.Nullable)
 
-    def createdAt = column[Date]("created_at", O.NotNull)
+    def createdAt = column[Timestamp]("created_at", O.NotNull)
 
-    def updatedAt = column[Date]("updated_at", O.NotNull)
+    def updatedAt = column[Timestamp]("updated_at", O.NotNull)
 
     def authToken = column[String]("auth_token", O.Nullable)
 
