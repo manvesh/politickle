@@ -11,8 +11,9 @@ case class Poll(
   ownerId: Long,
   description: String,
   hashTag: Option[String],
-  createdAt: Option[Timestamp],
-  updatedAt: Option[Timestamp])
+  choices: List[Choice],
+  createdAt: Option[Timestamp] = None,
+  updatedAt: Option[Timestamp] = None)
 
 trait PollsComponent {
   self: UsersComponent =>

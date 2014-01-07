@@ -1,3 +1,12 @@
+@(pollForm: Form[PollsController.PollFormData])
+@import helper._
+
 @layout("Create a new poll") {
 <h2>Create Poll</h2>
+
+  @form(action = routes.PollsController.create) {
+      @inputText(pollForm("description"))
+      @inputText(pollForm("hashTag"))
+      <input type="submit" value="Create Poll"/>
+  }
 }
