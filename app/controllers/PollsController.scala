@@ -57,7 +57,10 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
       val pollFromDB = Polls.findById(id)
       val userFromDB = request.user flatMap { userIdentity => Users.findByTwitterId(userIdentity.identityId.userId) }
       pollFromDB match {
-        case Some(poll) => Ok(views.html.Polls.show(poll, userFromDB))
+        case Some(poll) => {
+          val ownerUser = Users.findById(poll.ownerId).get
+          Ok(views.html.Polls.show(poll, ownerUser.twitterName, ownerUser.twitterHandle.get, userFromDB))
+        }
         case _ => NotFound
       }
     }

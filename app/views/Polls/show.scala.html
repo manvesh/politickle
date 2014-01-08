@@ -1,4 +1,4 @@
-@(poll: Poll, user: Option[User])
+@(poll: Poll, ownerName: String, ownerTwitterHandle: String, user: Option[User])
 
 @layout(poll.description) {
 <dl>
@@ -9,6 +9,6 @@
     <dd>#@poll.hashTag</dd>
   }
   <dt>Created by</dt>
-  <dd>@poll.ownerId</dd>
+  <dd>@@@ownerTwitterHandle</dd>
 </dl>
 }
