@@ -8,13 +8,13 @@ import scala.slick.lifted.ForeignKeyAction
 import scala.slick.lifted.ColumnOption.DBType
 
 case class Response(
-  id: Long,
+  id: Option[Long],
   twitterUserId: Long,
   pollId: Long,
   choiceId: Long,
   explanationText: Option[String],
-  createdAt: Timestamp,
-  updatedAt: Timestamp
+  createdAt: Option[Timestamp] = None,
+  updatedAt: Option[Timestamp] = None
   )
 
 trait ResponseComponent {
@@ -43,7 +43,9 @@ trait ResponseComponent {
 
     def updatedAt = column[Timestamp]("updated_at", O.NotNull)
 
-    def * = id ~ twitterUserId ~ pollId ~ choiceId ~ explanationText.? ~ createdAt ~ updatedAt <>(Response.apply _, Response.unapply _)
+    def idx = index("IDX_UNIQUE_RESPONSE", (twitterUserId, pollId, choiceId), unique = true)
+
+    def * = id.? ~ twitterUserId ~ pollId ~ choiceId ~ explanationText.? ~ createdAt.? ~ updatedAt.? <>(Response.apply _, Response.unapply _)
 
     def autoInc = * returning id
 
@@ -81,12 +83,13 @@ object Responses extends DAO {
   }
 
   def insert(response: Response)(implicit s: Session) {
-    Responses.autoInc.insert(response)
+    val responseToInsert = response.copy(createdAt = Some(currentTimestamp))
+    Responses.autoInc.insert(responseToInsert)
   }
 
   def update(id: Long, response: Response)(implicit s: Session) {
-    val ResponseToUpdate: Response = response.copy(id)
-    Responses.where(_.id === id).update(ResponseToUpdate)
+    val responseToUpdate: Response = response.copy(Some(id), updatedAt = Some(currentTimestamp))
+    Responses.where(_.id === id).update(responseToUpdate)
   }
 
   def delete(id: Long)(implicit s: Session) {
