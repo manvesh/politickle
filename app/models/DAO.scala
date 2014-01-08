@@ -8,11 +8,12 @@ case class Page[A](items: Seq[A], page: Int, offset: Long, total: Long) {
   lazy val next = Option(page + 1).filter(_ => (offset + items.size) < total)
 }
 
-private[models] class DAO extends UsersComponent with PollsComponent with ChoicesComponent with ResponseComponent with HelperMethods {
+private[models] class DAO extends UsersComponent with PollsComponent with ChoicesComponent with ResponseComponent with PollTargetsComponent with HelperMethods {
   val Polls: Polls = new Polls
   val Users: Users = new Users
   val Choices: Choices = new Choices
   val Responses: Responses = new Responses
+  val PollTargets: PollTargets = new PollTargets
 
   val PollsComponent: PollsComponent = this
   val ChoicesComponent: ChoicesComponent = this
