@@ -4,39 +4,44 @@
 @layout("Create a new poll") {
 <h2>Create Poll</h2>
 
-  <form method="POST" action="@routes.PollsController.create">
+  <form method="POST" role="form" class="form-horizontal" action="@routes.PollsController.create">
     <div class="form-group">
-      <label for="description">Poll question</label>
-      <input type="text" class="form-control" name="description" placeholder="Which is better?" />
+      <label for="description" class="col-sm-2 control-label">Poll question</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name="description" placeholder="Which is better?" />
+      </div>
+
     </div>
 
     <div class="form-group">
-      <label for="choices[0].description">Choice 1</label>
-      <input type="text" class="form-control" name="choices[0].description" placeholder="Socialized medicine" />
+      <label for="choices[0].description" class="col-sm-2 control-label">Choice 1</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name="choices[0].description" placeholder="Socialized medicine" />
+      </div>
     </div>
 
     <div class="form-group">
-      <label for="choices[1].description">Choice 2</label>
-      <input type="text" class="form-control" name="choices[1].description" placeholder="Privatized medicine" />
+      <label for="choices[1].description" class="col-sm-2 control-label">Choice 2</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name="choices[1].description" placeholder="Privatized medicine" />
+      </div>
     </div>
 
     <div class="form-group">
-      <label for="pollTargets[0].handle">Target 1</label>
-      <input type="text" class="form-control" name="pollTargets[0].handle" placeholder="@@HilaryClinton"/>
-    </div>
-
-    <div class="form-group">
-      <label for="pollTargets[1].handle">Target 2</label>
-      <input type="text" class="form-control" name="pollTargets[1].handle" placeholder="@@MicheleBachmann"/>
+      <label for="pollTargetHandles" class="col-sm-2 control-label">Twitter handles</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name="pollTargetHandles" placeholder="@@MicheleBachmann @@HilaryClinton"/>
+      </div>
     </div>
 
     <input type="hidden" name="pollTargets[0].twitterUserId" value="14244109" />
     <input type="hidden" name="pollTargets[1].twitterUserId" value="18217624" />
 
-
     @CSRF.formField
     <div class="form-group">
-      <button type="submit" class="form-control btn btn-primary" value="Tweet Poll">Create Poll</button>
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-primary" value="Tweet Poll">Create Poll</button>
+      </div>
     </div>
 
   </form>
