@@ -10,9 +10,8 @@ case class Choice(
   id: Option[Long],
   pollId: Long,
   description: String,
-  createdAt: Option[Timestamp],
-  updatedAt: Option[Timestamp]
-  )
+  createdAt: Option[Timestamp] = None,
+  updatedAt: Option[Timestamp] = None)
 
 trait ChoicesComponent {
   self: PollsComponent =>
