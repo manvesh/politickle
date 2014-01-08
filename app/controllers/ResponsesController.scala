@@ -11,6 +11,8 @@ import java.sql.Timestamp
 import java.util.Date
 import play.api.db.slick.DBAction
 import play.api.Logger
+import twitter4j.conf.ConfigurationBuilder
+import twitter4j.{StatusUpdate, TwitterFactory}
 
 object ResponsesController extends Controller with securesocial.core.SecureSocial {
 
