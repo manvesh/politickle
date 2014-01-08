@@ -10,11 +10,16 @@
   }
   <form method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
       <input name="poll_id" value="@poll.id" type="hidden" />
-      <div class="btn-group btn-group-lg">
+      <div class="btn-group" data-toggle="buttons">
       @for(choice <- choices) {
-        <input type="button" class="btn btn-default" name="choice_id" value="@choice.description">
+        <label class="btn btn-default">
+          <input type="radio" name="choice_id" value="@choice.id"> @choice.description
+        </label>
       }
       </div>
+      <script type="text/javascript">
+        $('.btn').button();
+      </script>
     @if( user.isEmpty ){
     <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
       <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter">
