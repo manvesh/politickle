@@ -12,9 +12,14 @@ import models.{Poll, Choice, Polls}
 
 
 object PollsController extends Controller with securesocial.core.SecureSocial {
-//  case class PollFormData(description: String, hashTag: Option[String], choices: Seq[ChoiceFormData])
-//  case class ChoiceFormData(description: String)
   import mappings.CustomMappings._
+
+  case class PollFormData(description: String,
+                          hashTag: Option[String],
+                          choices: Seq[ChoiceFormData],
+                          pollTargets: Option[Seq[PollTargetFormData]])
+  case class ChoiceFormData(description: String)
+  case class PollTargetFormData(handle: String)
 
   val pollForm = Form(
     mapping(
@@ -22,15 +27,18 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
       "hashTag" -> optional(text),
       "choices" -> seq(
         mapping(
-          "id" -> optional(longNumber),
-          "pollId" -> longNumber,
           "description" -> nonEmptyText
-        )(Choice.apply)(Choice.unapply)
-      )
-    )(Poll.apply)(Poll.unapply)
+        )(ChoiceFormData.apply)(ChoiceFormData.unapply)
+      ),
+      "pollTargets" -> optional(seq(
+        mapping(
+          "handle" -> text
+        )(PollTargetFormData.apply)(PollTargetFormData.unapply)
+      ))
+    )(PollFormData.apply)(PollFormData.unapply)
   )
 
-  def newPoll = DBAction { implicit session =>
+  def newPoll = SecuredAction { implicit session =>
     Ok(views.html.Polls.newPoll(pollForm))
   }
 
@@ -41,7 +49,9 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
   }
 
   def create = SecuredAction { implicit request =>
-    val form = pollForm.bindFromRequest.get
+    //val form = pollForm.bindFromRequest.get
+
+    println(request)
     // TODO: create Poll
     Redirect(routes.PollsController.show(0))
   }

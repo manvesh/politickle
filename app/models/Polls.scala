@@ -11,7 +11,6 @@ case class Poll(
   ownerId: Long,
   description: String,
   hashTag: Option[String],
-  choices: List[Choice],
   createdAt: Option[Timestamp] = None,
   updatedAt: Option[Timestamp] = None)
 

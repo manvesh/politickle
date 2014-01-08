@@ -1,7 +1,7 @@
 package mappings
 
 import java.sql.Timestamp
-import play.api.data.{FormError, Mapping, Form}
+import play.api.data.{Forms, FormError, Mapping}
 import play.api.data.format.Formatter
 
 object CustomMappings {
@@ -23,5 +23,5 @@ object CustomMappings {
     }
   }
 
-  def timestamp: Mapping[Timestamp] = Form.of[Timestamp]
+  def timestamp: Mapping[Timestamp] = Forms.of[Timestamp]
 }
