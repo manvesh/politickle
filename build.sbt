@@ -18,7 +18,8 @@ libraryDependencies ++= Seq(
   "mysql" % "mysql-connector-java" % "5.1.27",
   // Add your own project dependencies in the form:
   // "group" % "artifact" % "version"
-  "securesocial" %% "securesocial" % "2.1.2"
+  "securesocial" %% "securesocial" % "2.1.2",
+  "postgresql" % "postgresql" % "9.1-901-1.jdbc4"
 )
 
 resolvers += Resolver.url("sbt-plugin-releases", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
