@@ -8,7 +8,7 @@ import play.api.data._
 import play.api.data.Mapping
 import play.api.data.Forms._
 import play.api.Play.current
-import models.{Poll, Choice, Polls}
+import models.{Users, Poll, Choice, Polls}
 import play.Logger
 
 
@@ -45,10 +45,15 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
     Ok(views.html.Polls.newPoll(pollForm))
   }
 
-  def show(id: Long) = DBAction { implicit session =>
-    Polls.findById(id) map { poll =>
-      Ok(views.html.Polls.show(poll))
-    } getOrElse NotFound
+  def show(id: Long) = UserAwareAction { implicit request =>
+    DB withSession { implicit s: Session =>
+      val pollFromDB = Polls.findById(id)
+      val userFromDB = request.user flatMap { userIdentity => Users.findByTwitterId(userIdentity.identityId.userId) }
+      pollFromDB match {
+        case Some(poll) => Ok(views.html.Polls.show(poll, userFromDB))
+        case _ => NotFound
+      }
+    }
   }
 
   def create = SecuredAction { implicit request =>
