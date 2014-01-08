@@ -5,25 +5,39 @@
 <h2>Create Poll</h2>
 
   <form method="POST" action="@routes.PollsController.create">
-    <label for="description">Poll question</label>
-    <input type="text" name="description" placeholder="Which is better?" />
+    <div class="form-group">
+      <label for="description">Poll question</label>
+      <input type="text" class="form-control" name="description" placeholder="Which is better?" />
+    </div>
 
-    <label for="choices[0].description">Choice 1</label>
-    <input type="text" name="choices[0].description" placeholder="Socialized medicine" />
+    <div class="form-group">
+      <label for="choices[0].description">Choice 1</label>
+      <input type="text" class="form-control" name="choices[0].description" placeholder="Socialized medicine" />
+    </div>
 
-    <label for="choices[1].description">Choice 2</label>
-    <input type="text" name="choices[1].description" placeholder="Privatized medicine" />
+    <div class="form-group">
+      <label for="choices[1].description">Choice 2</label>
+      <input type="text" class="form-control" name="choices[1].description" placeholder="Privatized medicine" />
+    </div>
 
-    <label for="pollTargets[0].handle">Target 1</label>
-    <input type="text" name="pollTargets[0].handle" placeholder="@@HilaryClinton"/>
+    <div class="form-group">
+      <label for="pollTargets[0].handle">Target 1</label>
+      <input type="text" class="form-control" name="pollTargets[0].handle" placeholder="@@HilaryClinton"/>
+    </div>
 
-    <label for="pollTargets[1].handle">Target 2</label>
-    <input type="text" name="pollTargets[1].handle" placeholder="@@MicheleBachmann"/>
+    <div class="form-group">
+      <label for="pollTargets[1].handle">Target 2</label>
+      <input type="text" class="form-control" name="pollTargets[1].handle" placeholder="@@MicheleBachmann"/>
+    </div>
 
     <input type="hidden" name="pollTargets[0].twitterUserId" value="14244109" />
     <input type="hidden" name="pollTargets[1].twitterUserId" value="18217624" />
 
+
     @CSRF.formField
-    <br/><input type="submit" value="Tweet Poll"/>
+    <div class="form-group">
+      <button type="submit" class="form-control btn btn-primary" value="Tweet Poll">Create Poll</button>
+    </div>
+
   </form>
 }

@@ -5,9 +5,11 @@
 <html>
     <head>
         <title>@title</title>
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
-        <link rel="stylesheet" type="text/css" href="@routes.Assets.at("securesocial/bootstrap/css/bootstrap.min.css")">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.at("bower_components/bootstrap/dist/css/bootstrap.min.css")">
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/index.css")">
     </head>
     <body>
         <div class="navbar navbar-fixed-top">
@@ -25,6 +27,7 @@
         <script src="@routes.Assets.at("bower_components/es5-shim/es5-shim.js")"></script>
         <script src="@routes.Assets.at("bower_components/es5-shim/es5-sham.js")"></script>
         <script src="@routes.Assets.at("bower_components/jquery/jquery.js")"></script>
+        <script src="@routes.Assets.at("bower_components/bootstrap/dist/js/bootstrap.min.js")"></script>
         <script data-main="@routes.Assets.at("javascripts/main.js")" src="@routes.Assets.at("bower_components/requirejs/require.js")"></script>
     </body>
 </html>
