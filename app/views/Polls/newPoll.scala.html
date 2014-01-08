@@ -8,10 +8,10 @@
     <label for="description">Poll question</label>
     <input type="text" name="description" placeholder="Which is better?" />
 
-    <label for="choices[0][description]">Choice 1</label>
+    <label for="choices[0].description">Choice 1</label>
     <input type="text" name="choices[0].description" placeholder="Socialized medicine" />
 
-    <label for="choices[1][description]">Choice 2</label>
+    <label for="choices[1].description">Choice 2</label>
     <input type="text" name="choices[1].description" placeholder="Privatized medicine" />
 
     @CSRF.formField
