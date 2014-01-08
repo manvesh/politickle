@@ -9,6 +9,7 @@ import play.api.data.Mapping
 import play.api.data.Forms._
 import play.api.Play.current
 import models.{Poll, Choice, Polls}
+import play.Logger
 
 
 object PollsController extends Controller with securesocial.core.SecureSocial {
@@ -38,6 +39,8 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
     )(PollFormData.apply)(PollFormData.unapply)
   )
 
+  //case class SecuredDBAction extends Action with SecuredAction with DBAction
+
   def newPoll = SecuredAction { implicit session =>
     Ok(views.html.Polls.newPoll(pollForm))
   }
@@ -49,9 +52,9 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
   }
 
   def create = SecuredAction { implicit request =>
-    //val form = pollForm.bindFromRequest.get
+    val form = pollForm.bindFromRequest.get
 
-    println(request)
+    Logger.info(form.toString)
     // TODO: create Poll
     Redirect(routes.PollsController.show(0))
   }
