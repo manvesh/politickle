@@ -1,1 +1,1 @@
-web: target/universal/stage/bin/politickle -Dhttp.port=$PORT
+web: target/universal/stage/bin/politickle -Dhttp.port=${PORT} -DapplyEvolutions.default=true -Ddb.default.driver=org.postgresql.Driver -Ddb.default.url=${DATABASE_URL}
