@@ -71,9 +71,9 @@ object Polls extends DAO {
     Page(result, page, offset, totalRows)
   }
 
-  def insert(poll: Poll)(implicit s: Session) = {
+  def insert(poll: Poll)(implicit s: Session): Int = {
     val pollToInsert = poll.copy(createdAt = Some(currentTimestamp))
-    Polls.autoInc.insert(pollToInsert)
+    Polls.autoInc.insert(pollToInsert).asInstanceOf[Int]
   }
 
   def update(id: Long, poll: Poll)(implicit s: Session) {

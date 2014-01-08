@@ -60,9 +60,13 @@ object PollTargets extends DAO {
     query.list
   }
 
-  def insert(target: PollTarget)(implicit s: Session) {
+  def insert(target: PollTarget)(implicit s: Session): Int = {
     val targetToUpdate = target.copy(createdAt = Some(currentTimestamp))
-    PollTargets.autoInc.insert(targetToUpdate)
+    PollTargets.autoInc.insert(targetToUpdate).asInstanceOf[Int]
+  }
+
+  def insertAll(pollTargets: PollTarget*)(implicit s: Session) = {
+    PollTargets.autoInc.insertAll(pollTargets: _*)
   }
 
   def update(id: Long, target: PollTarget)(implicit s: Session) {

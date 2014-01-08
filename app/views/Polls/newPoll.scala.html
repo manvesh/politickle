@@ -14,7 +14,16 @@
     <label for="choices[1].description">Choice 2</label>
     <input type="text" name="choices[1].description" placeholder="Privatized medicine" />
 
+    <label for="pollTargets[0].handle">Target 1</label>
+    <input type="text" name="pollTargets[0].handle" placeholder="@@HilaryClinton"/>
+
+    <label for="pollTargets[1].handle">Target 2</label>
+    <input type="text" name="pollTargets[1].handle" placeholder="@@MicheleBachmann"/>
+
+    <input type="hidden" name="pollTargets[0].twitterUserId" value="14244109" />
+    <input type="hidden" name="pollTargets[1].twitterUserId" value="18217624" />
+
     @CSRF.formField
-    <input type="submit" value="Tweet Poll"/>
+    <br/><input type="submit" value="Tweet Poll"/>
   </form>
 }

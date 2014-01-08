@@ -67,9 +67,9 @@ object Choices extends DAO {
     Page(result, page, offset, totalRows)
   }
 
-  def insert(choice: Choice)(implicit s: Session) {
+  def insert(choice: Choice)(implicit s: Session): Int = {
     val choiceToInsert = choice.copy(createdAt = Some(currentTimestamp))
-    Choices.autoInc.insert(choice)
+    Choices.autoInc.insert(choice).asInstanceOf[Int]
   }
 
   def update(id: Long, choice: Choice)(implicit s: Session) {
@@ -79,5 +79,9 @@ object Choices extends DAO {
 
   def delete(id: Long)(implicit s: Session) {
     Choices.where(_.id === id).delete
+  }
+
+  def insertAll(choices: Choice*)(implicit s: Session) = {
+    Choices.autoInc.insertAll(choices: _*)
   }
 }
