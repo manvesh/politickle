@@ -1,4 +1,4 @@
-@(pollForm: Form[PollsController.PollFormData])
+@(pollForm: Form[PollsController.PollFormData])(implicit token: play.filters.csrf.CSRF.Token)
 @import helper._
 
 @layout("Create a new poll") {
@@ -14,6 +14,7 @@
     <label for="choices[1][description]">Choice 2</label>
     <input type="text" name="choices[1][description]" placeholder="Privatized medicine" />
 
+    @CSRF.formField
     <input type="submit" value="Tweet Poll"/>
   </form>
 }
