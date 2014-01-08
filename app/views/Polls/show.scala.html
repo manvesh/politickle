@@ -1,4 +1,4 @@
-@(poll: Poll)
+@(poll: Poll, ownerName: String, ownerTwitterHandle: String, user: Option[User])
 
 @layout(poll.description) {
 <dl>
@@ -9,6 +9,14 @@
     <dd>#@poll.hashTag</dd>
   }
   <dt>Created by</dt>
-  <dd>@poll.ownerId</dd>
+  <dd>@@@ownerTwitterHandle</dd>
+  @if( user.isDefined ){
+    <div>Your choices are A and B</div>
+  } else {
+    <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
+      <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter">
+      to answer this question
+    </a>
+  }
 </dl>
 }

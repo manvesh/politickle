@@ -10,7 +10,7 @@ import play.api.Play.current
 import models.{Users, Poll, Choice, Polls}
 import play.Logger
 import scala.concurrent.Future
-import securesocial.core.SecuredRequest
+import securesocial.core.{SecureSocial, SecuredRequest}
 
 
 object PollsController extends Controller with securesocial.core.SecureSocial {
@@ -52,10 +52,23 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
     Ok(views.html.Polls.newPoll(pollForm))
   }
 
-  def show(id: Long) = DBAction { implicit session =>
-    Polls.findById(id) map { poll =>
-      Ok(views.html.Polls.show(poll))
-    } getOrElse NotFound
+  def show(id: Long) = UserAwareAction { implicit request =>
+    DB withSession { implicit s: Session =>
+      val pollFromDB = Polls.findById(id)
+      val userFromDB = request.user flatMap { userIdentity => Users.findByTwitterId(userIdentity.identityId.userId) }
+      pollFromDB match {
+        case Some(poll) => {
+          val ownerUser = Users.findById(poll.ownerId).get
+          if (userFromDB.isEmpty) {
+            val session = request.session + ("original-url", request.uri)
+            Ok(views.html.Polls.show(poll, ownerUser.twitterName, ownerUser.twitterHandle.get, None)).withSession(session)
+          } else {
+            Ok(views.html.Polls.show(poll, ownerUser.twitterName, ownerUser.twitterHandle.get, userFromDB))
+          }
+        }
+        case _ => NotFound
+      }
+    }
   }
 
   def create = SecuredAction { implicit request =>
