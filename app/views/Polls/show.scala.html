@@ -1,4 +1,4 @@
-@(poll: Poll, ownerName: String, ownerTwitterHandle: String, user: Option[User])
+@(poll: Poll, choices: Seq[Choice], ownerName: String, ownerTwitterHandle: String, user: Option[User])
 
 @layout(poll.description) {
 <dl>
@@ -8,15 +8,30 @@
     <dt>Hash Tag</dt>
     <dd>#@poll.hashTag</dd>
   }
-  <dt>Created by</dt>
-  <dd>@@@ownerTwitterHandle</dd>
-  @if( user.isDefined ){
-    <div>Your choices are A and B</div>
-  } else {
+  <form method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
+      <input name="poll_id" value="@poll.id" type="hidden" />
+      <div class="btn-group btn-group-lg">
+      @for(choice <- choices) {
+        <button type="button" class="btn btn-default" name="choice_id" value="@choice.description">@choice.description</button>
+      }
+      </div>
+    @if( user.isEmpty ){
     <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
       <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter">
       to answer this question
     </a>
-  }
+    } else {
+      <div class="input-group">
+        <span class="input-group-addon">Add explanation</span>
+        <input name="explanation" type="text" class="form-control" placeholder="...">
+      </div>
+      <input type="submit" value="Submit your answer">
+    }
+  </form>
+
+    <p>
+  <dt>Created by</dt>
+  <dd>@@@ownerTwitterHandle</dd>
+    </p>
 </dl>
 }

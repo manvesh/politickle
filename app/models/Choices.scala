@@ -47,6 +47,14 @@ object Choices extends DAO {
   def findById(id: Long)(implicit s: Session): Option[Choice] =
     Choices.byId(id).firstOption
 
+  def findByPollId(pollId: Long)(implicit s: Session): Seq[Choice] = {
+    val query =
+      (for {
+        (responses) <- Choices.where(_.pollId === pollId)
+      } yield (responses))
+    query.list
+  }
+
   def count(implicit s: Session): Int =
     Query(Choices.length).first
 
