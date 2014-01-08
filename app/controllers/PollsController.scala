@@ -1,15 +1,16 @@
 package controllers
 
-import play.api.mvc.Controller
+import play.api.mvc.{Action, Request, SimpleResult, Controller}
 import play.api.db.slick.DBAction
 import play.api.db.slick._
-import play.api.db.slick.Config.driver.simple._
 import play.api.data._
 import play.api.data.Mapping
 import play.api.data.Forms._
 import play.api.Play.current
 import models.{Users, Poll, Choice, Polls}
 import play.Logger
+import scala.concurrent.Future
+import securesocial.core.SecuredRequest
 
 
 object PollsController extends Controller with securesocial.core.SecureSocial {
@@ -22,7 +23,7 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
   case class ChoiceFormData(description: String)
   case class PollTargetFormData(handle: String)
 
-  val pollForm = Form(
+  private val pollForm = Form(
     mapping(
       "description" -> nonEmptyText,
       "hashTag" -> optional(text),
@@ -39,7 +40,13 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
     )(PollFormData.apply)(PollFormData.unapply)
   )
 
-  //case class SecuredDBAction extends Action with SecuredAction with DBAction
+  private implicit def pollFormToPoll(pollForm: PollFormData)(implicit request: SecuredRequest[_], session: Session): Poll = {
+    val user = Users.findByTwitterId(request.user.identityId.userId).get
+    Poll(id = None,
+      ownerId = user.id.get,
+      description = pollForm.description,
+      hashTag = pollForm.hashTag)
+  }
 
   def newPoll = SecuredAction { implicit session =>
     Ok(views.html.Polls.newPoll(pollForm))
@@ -57,10 +64,12 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
   }
 
   def create = SecuredAction { implicit request =>
-    val form = pollForm.bindFromRequest.get
+    val pollFormData = pollForm.bindFromRequest.get
+    Logger.info(pollFormData.toString)
+    val pollId = play.api.db.slick.DB.withSession { implicit s: Session =>
+      Polls.insert(pollFormData)
+    }
 
-    Logger.info(form.toString)
-    // TODO: create Poll
     Redirect(routes.PollsController.show(0))
   }
 }
