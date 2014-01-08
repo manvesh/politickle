@@ -1,5 +1,5 @@
-@(poll: Poll, choices: Seq[Choice], ownerName: String, ownerTwitterHandle: String, user: Option[User])
-
+@(poll: Poll, choices: Seq[Choice], ownerName: String, ownerTwitterHandle: String, user: Option[User])(implicit token: play.filters.csrf.CSRF.Token)
+@import helper._
 @layout(poll.description) {
 <dl>
   <dt>Description</dt>
@@ -12,7 +12,7 @@
       <input name="poll_id" value="@poll.id" type="hidden" />
       <div class="btn-group btn-group-lg">
       @for(choice <- choices) {
-        <button type="button" class="btn btn-default" name="choice_id" value="@choice.description">@choice.description</button>
+        <input type="button" class="btn btn-default" name="choice_id" value="@choice.description">
       }
       </div>
     @if( user.isEmpty ){
@@ -25,6 +25,7 @@
         <span class="input-group-addon">Add explanation</span>
         <input name="explanation" type="text" class="form-control" placeholder="...">
       </div>
+      @CSRF.formField
       <input type="submit" value="Submit your answer">
     }
   </form>
