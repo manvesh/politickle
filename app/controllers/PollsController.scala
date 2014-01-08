@@ -61,10 +61,10 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
   def create = SecuredAction { implicit request =>
     val pollFormData = pollForm.bindFromRequest.get
     Logger.info(pollFormData.toString)
-    val pollId = play.api.db.slick.DB.withSession { implicit s: Session =>
-      Polls.insert(pollFormData)
+    val pollId: Int = play.api.db.slick.DB.withSession { implicit s: Session =>
+      Polls.insert(pollFormData).asInstanceOf[Int]
     }
 
-    Redirect(routes.PollsController.show(0))
+    Redirect(routes.PollsController.show(pollId))
   }
 }
