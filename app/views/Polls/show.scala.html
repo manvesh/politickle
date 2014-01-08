@@ -1,9 +1,25 @@
 @(poll: Poll, choices: Seq[Choice], ownerName: String, ownerTwitterHandle: String, user: Option[User])(implicit token: play.filters.csrf.CSRF.Token)
 @import helper._
-@layout(poll.description) {
+@layout(poll.description,
+  Html("""
+    <meta name="twitter:card" content="politickle_card">
+    <meta name="twitter:politickle:asker:id" content="111092283">
+    <meta name="twitter:politickle:asker:name" content="vyas">
+    <meta name="twitter:politickle:receiver" content="mgadda">
+    <meta name="twitter:politickle:question" content="What do you think about obamacare?">
+    <meta name="twitter:politickle:selection" content="sel">
+    <meta name="twitter:politickle:choice1:text" content="good">
+    <meta name="twitter:politickle:choice2:text" content="bad">
+    <meta name="twitter:politickle:url" content="http://politickle.com">
+    <meta name="twitter:politickle:politician1:id" content="111092283">
+    <meta name="twitter:politickle:politician1:name" content="WeWork">
+    <meta name="twitter:politickle:politician2:id" content="111092283">
+    <meta name="twitter:politickle:politician2:name" content="WeWork">
+
+        """)
+) {
 <dl>
-  <dt>Description</dt>
-  <dd>@poll.description</dd>
+  <h2>@poll.description</h2>
   @if(!poll.hashTag.isEmpty) {
     <dt>Hash Tag</dt>
     <dd>#@poll.hashTag</dd>
@@ -21,10 +37,11 @@
         $('.btn').button();
       </script>
     @if( user.isEmpty ){
-    <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
+      <p>
+     <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
       <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter">
-      to answer this question
-    </a>
+      to answer this question </a>
+      </p>
     } else {
       <div class="input-group">
         <span class="input-group-addon">Add explanation</span>
@@ -35,7 +52,6 @@
     }
   </form>
 
-    <p>
   <dt>Created by</dt>
   <dd>@@@ownerTwitterHandle</dd>
     </p>
