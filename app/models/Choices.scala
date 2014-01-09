@@ -33,7 +33,7 @@ trait ChoicesComponent {
 
     def * = id.? ~ pollId ~ description ~ createdAt.? ~ updatedAt.? <>(Choice.apply _, Choice.unapply _)
 
-    def autoInc = * returning id
+    def autoInc = pollId ~ description ~ createdAt.? ~ updatedAt.? returning id
 
     val byId = createFinderBy(_.id)
   }
@@ -77,7 +77,24 @@ object Choices extends DAO {
 
   def insert(choice: Choice)(implicit s: Session): Int = {
     val choiceToInsert = choice.copy(createdAt = Some(currentTimestamp))
-    Choices.autoInc.insert(choice).asInstanceOf[Int]
+    Choices.autoInc.insert(
+      choiceToInsert.pollId,
+      choiceToInsert.description,
+      choiceToInsert.createdAt,
+      choiceToInsert.updatedAt
+    ).asInstanceOf[Int]
+  }
+
+  def insertAll(choices: Choice*)(implicit s: Session) = {
+    val toInsert = choices.map(_.copy(createdAt = Some(currentTimestamp)))
+    Choices.autoInc.insertAll(
+      toInsert.map(c =>
+        (c.pollId,
+          c.description,
+          c.createdAt,
+          c.updatedAt
+          )): _*
+    )
   }
 
   def update(id: Long, choice: Choice)(implicit s: Session) {
@@ -89,7 +106,4 @@ object Choices extends DAO {
     Choices.where(_.id === id).delete
   }
 
-  def insertAll(choices: Choice*)(implicit s: Session) = {
-    Choices.autoInc.insertAll(choices: _*)
-  }
 }

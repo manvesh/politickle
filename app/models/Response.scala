@@ -47,7 +47,7 @@ trait ResponseComponent {
 
     def * = id.? ~ twitterUserId ~ pollId ~ choiceId ~ explanationText.? ~ createdAt.? ~ updatedAt.? <>(Response.apply _, Response.unapply _)
 
-    def autoInc = * returning id
+    def autoInc = twitterUserId ~ pollId ~ choiceId ~ explanationText.? ~ createdAt.? ~ updatedAt.? returning id
 
     val byId = createFinderBy(_.id)
 
@@ -88,7 +88,14 @@ object Responses extends DAO {
 
   def insert(response: Response)(implicit s: Session) {
     val responseToInsert = response.copy(createdAt = Some(currentTimestamp))
-    Responses.autoInc.insert(responseToInsert)
+    Responses.autoInc.insert(
+      responseToInsert.twitterUserId,
+      responseToInsert.pollId,
+      responseToInsert.choiceId,
+      responseToInsert.explanationText,
+      responseToInsert.createdAt,
+      responseToInsert.updatedAt
+    )
   }
 
   def update(id: Long, response: Response)(implicit s: Session) {
