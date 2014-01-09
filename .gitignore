@@ -3,9 +3,9 @@ bin
 db
 eclipse
 .idea
-lib
-log
-logs
+/lib
+/log
+/logs
 modules
 precompiled
 project/project

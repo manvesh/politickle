@@ -23,7 +23,7 @@ define(function (require) {
       var color = d3.scale.category20();
       $("#chart").html("");
       var width = 200;
-      var height = 100;
+      var height = 150;
       var radius = Math.min(width, height) / 2;
 
       var svg = d3.select("#chart").append("svg")
