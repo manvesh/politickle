@@ -16,7 +16,7 @@ object ResponsesController extends Controller with securesocial.core.SecureSocia
 
   val responseForm = Form(
     mapping(
-      "user_id" -> longNumber,
+      "twitter_id" -> text(0, 20),
       "poll_id" -> longNumber,
       "choice_id" -> longNumber,
       "explanation" -> optional(text(0, 2000))
@@ -83,4 +83,4 @@ object ResponsesController extends Controller with securesocial.core.SecureSocia
   }
 }
 
-case class ResponseData(twitterUserId: Long, pollId: Long, choiceId: Long, explanation: Option[String])
+case class ResponseData(twitterUserId: String, pollId: Long, choiceId: Long, explanation: Option[String])

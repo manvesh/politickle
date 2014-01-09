@@ -1,22 +1,60 @@
-@(poll: Poll, ownerName: String, ownerTwitterHandle: String, user: Option[User])
+@(poll: Poll, choices: Seq[Choice], ownerUser: User, user: Option[User], userResponse: Option[Response])(implicit token: play.filters.csrf.CSRF.Token)
+@import helper._
 
-@layout(poll.description) {
+@metaTags(poll: Poll, choices: Seq[Choice], ownerName: String, ownerTwitterHandle: String, ownerTwitterId: String) = {
+    <meta name="twitter:card" content="politickle_card">
+    <meta name="twitter:politickle:asker:id" content="@ownerTwitterId">
+    <meta name="twitter:politickle:asker:name" content="@ownerName">
+    <meta name="twitter:politickle:question" content="@poll.description">
+    <meta name="twitter:politickle:selection" content="sel">
+    <meta name="twitter:politickle:choice1:text" content="@choices.head.description">
+    <meta name="twitter:politickle:choice2:text" content="@choices.last.description">
+    <meta name="twitter:politickle:url" content="http://cards-staging.twitter.com/cards/caps?@routes.ResponsesController.create(poll.id.get, true)">
+    <meta name="twitter:politickle:politician2:id" content="111092283">
+    <meta name="twitter:politickle:politician2:name" content="@@WeWork">
+}
+
+@layout(poll.description, metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId)) {
 <dl>
-  <dt>Description</dt>
-  <dd>@poll.description</dd>
+  <h2>@poll.description</h2>
   @if(!poll.hashTag.isEmpty) {
     <dt>Hash Tag</dt>
     <dd>#@poll.hashTag</dd>
   }
+  <form method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
+      <input name="poll_id" value="@poll.id" type="hidden" />
+      <div class="form-group btn-group" data-toggle="buttons">
+      @for(choice <- choices) {
+        <p>
+        <label class="btn btn-default">
+          <input type="radio" name="choice_id" value="@choice.id"> @choice.description
+        </label>
+        </p>
+      }
+      </div>
+      <script type="text/javascript">
+        $('.btn').button();
+      </script>
+    @if( user.isEmpty ){
+      <p>
+     <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
+      <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter"></a>
+      </p>
+    } else {
+      <div class="form-group input-group">
+        <span class="input-group-addon">Add explanation</span>
+        <input name="explanation" type="text" class="form-control" placeholder="...">
+      </div>
+      @CSRF.formField
+      <div class="form-group">
+      <input class="btn btn-primary" type="submit" value="Submit your answer">
+      </div>
+      </p>
+    }
+  </form>
+
   <dt>Created by</dt>
-  <dd>@@@ownerTwitterHandle</dd>
-  @if( user.isDefined ){
-    <div>Your choices are A and B</div>
-  } else {
-    <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
-      <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter">
-      to answer this question
-    </a>
-  }
+  <dd>@@@ownerUser.twitterHandle</dd>
+    </p>
 </dl>
 }

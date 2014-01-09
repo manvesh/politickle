@@ -20,8 +20,14 @@ require(
       debug.enable(true);
       compose.mixin(registry, [advice.withAdvice, withLogging]);
 
-      require(['page/default'], function(initializeDefault) {
+      require(
+        [
+          'page/home/default',
+          'page/poll/create'
+        ], function(initializeDefault, initializePollCreate) {
+
         initializeDefault();
+        initializePollCreate();
       });
   }
 );
