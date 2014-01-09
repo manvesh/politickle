@@ -10,6 +10,16 @@
         <whitelistSiteId/>
       </sources>
     </user>
+    <image name="chart_image">
+      <sources>
+        <metaTag>
+          <src>twitter:image</src>
+          <width>twitter:image:width</width>
+          <height>twitter:image:height</height>
+        </metaTag>
+      </sources>
+      <constraints desiredWidth="82" desiredHeight="38"/>
+    </image>
     <text name="question">
       <sources>
         <metaTag>twitter:politickle:question</metaTag>
@@ -221,6 +231,8 @@
           <style element="follow_up_buttons">visible</style>
           <style element="choices_container">invisible</style>
           <style element="failure_message_container">invisible</style>
+          <style element="poll_image">visible</style>
+          <style element="totweet_text">visible</style>
         </applyStyles>
       </action>
       <action id="go_to_tweeted_submitted_state">
@@ -343,9 +355,16 @@
                   onTap="choose_politician"
                   >Ask a politician</text>
               </container>
+
             </container>
             <container id="failure_message_container" width="fill" visible="false">
               <text id="failure_message" class="error" width="fill" textId="FAILURE_TO_SUBMIT">Failed to submit your vote.</text>
+            </container>
+            <container id="poll_image" visible="false">
+              <image>
+                <src>{{chart_image}}</src>
+              </image>
+              <text id="totweet_text" visible="false">{{totweet}}</text>
             </container>
           </container>
 
