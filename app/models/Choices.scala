@@ -33,7 +33,7 @@ trait ChoicesComponent {
 
     def * = id.? ~ pollId ~ description ~ createdAt.? ~ updatedAt.? <>(Choice.apply _, Choice.unapply _)
 
-    def autoInc = * returning id
+    def autoInc = pollId ~ description ~ createdAt.? ~ updatedAt.? returning id
 
     val byId = createFinderBy(_.id)
   }
@@ -46,6 +46,14 @@ object Choices extends DAO {
 
   def findById(id: Long)(implicit s: Session): Option[Choice] =
     Choices.byId(id).firstOption
+
+  def findByPollId(pollId: Long)(implicit s: Session): Seq[Choice] = {
+    val query =
+      (for {
+        (responses) <- Choices.where(_.pollId === pollId)
+      } yield (responses))
+    query.list
+  }
 
   def count(implicit s: Session): Int =
     Query(Choices.length).first
@@ -67,9 +75,26 @@ object Choices extends DAO {
     Page(result, page, offset, totalRows)
   }
 
-  def insert(choice: Choice)(implicit s: Session) {
+  def insert(choice: Choice)(implicit s: Session): Int = {
     val choiceToInsert = choice.copy(createdAt = Some(currentTimestamp))
-    Choices.autoInc.insert(choice)
+    Choices.autoInc.insert(
+      choiceToInsert.pollId,
+      choiceToInsert.description,
+      choiceToInsert.createdAt,
+      choiceToInsert.updatedAt
+    ).asInstanceOf[Int]
+  }
+
+  def insertAll(choices: Choice*)(implicit s: Session) = {
+    val toInsert = choices.map(_.copy(createdAt = Some(currentTimestamp)))
+    Choices.autoInc.insertAll(
+      toInsert.map(c =>
+        (c.pollId,
+          c.description,
+          c.createdAt,
+          c.updatedAt
+          )): _*
+    )
   }
 
   def update(id: Long, choice: Choice)(implicit s: Session) {
@@ -80,4 +105,5 @@ object Choices extends DAO {
   def delete(id: Long)(implicit s: Session) {
     Choices.where(_.id === id).delete
   }
+
 }

@@ -1,0 +1,388 @@
+<document xmlns="http://schemas.twitter.com/cards/3.0">
+  <fields>
+    <!-- Politickle Card -->
+    <user name="asker">
+      <sources>
+        <metaTag>
+          <userId>twitter:politickle:asker:id</userId>
+          <screenName>twitter:politickle:asker:name</screenName>
+        </metaTag>
+        <whitelistSiteId/>
+      </sources>
+    </user>
+    <text name="question">
+      <sources>
+        <metaTag>twitter:politickle:question</metaTag>
+      </sources>
+    </text>
+    <text name="choice_one_text">
+      <sources>
+        <metaTag>twitter:politickle:choice1:text</metaTag>
+      </sources>
+    </text>
+    <text name="choice_two_text">
+      <sources>
+        <metaTag>twitter:politickle:choice2:text</metaTag>
+      </sources>
+    </text>
+    <text name="politickle_submit_url">
+      <sources>
+        <metaTag>twitter:politickle:submiturl</metaTag>
+      </sources>
+    </text>
+    <text name="totweet">
+      <sources>
+        <metaTag>twitter:politickle:totweet</metaTag>
+      </sources>
+    </text>
+    <text name="card_url">
+      <sources>
+        <metaTag>twitter:politickle:cardurl</metaTag>
+      </sources>
+    </text>
+    <user name="politician1">
+      <sources>
+        <metaTag>
+          <userId>twitter:politickle:politician1:id</userId>
+          <screenName>twitter:politickle:politician1:name</screenName>
+        </metaTag>
+        <whitelistSiteId/>
+      </sources>
+    </user>
+    <user name="politician2">
+      <sources>
+        <metaTag>
+          <userId>twitter:politickle:politician2:id</userId>
+          <screenName>twitter:politickle:politician2:name</screenName>
+        </metaTag>
+        <whitelistSiteId/>
+      </sources>
+    </user>
+
+  </fields>
+ 
+  <card>
+    <namespace>com.politickle</namespace>
+    <name>politickle</name>
+    <styles>
+      <style name="title_text">
+        <width>fill</width>
+        <fontSize>14</fontSize>
+        <fontBold>true</fontBold>
+      </style>
+      <style name="question_text">
+        <width>fill</width>
+        <fontSize>15</fontSize>
+        <maxLines>1</maxLines>
+      </style>
+      <style name="choices_container_style">
+        <width>fill</width>
+        <margin>5,5,5,5</margin>
+      </style>
+      <style name="choice_button_row">
+        <layout>horizontal</layout>
+        <width>fill</width>
+        <margin>0,0,0,4</margin>
+        <verticalAlign>middle</verticalAlign>
+       </style>
+      <style name="choice_button_padder">
+        <backgroundColor>#f5f8fa</backgroundColor>
+        <borderWidth>1</borderWidth>
+        <cornerRadius>5</cornerRadius>
+        <borderColor>#ccd6dd</borderColor>
+        <width>fill</width>
+        <horizontalAlign>middle</horizontalAlign>
+        <margin>0,0,0,2</margin>
+      </style>
+      <style name="choice_button_padder_inner">
+        <width>fill</width>
+        <layout>vertical</layout>
+        <margin>5,14,5,14</margin>
+        <horizontalAlign>middle</horizontalAlign>
+        <verticalAlign>middle</verticalAlign>
+      </style>
+      <style name="follow_up_button_padder_inner">
+        <width>fill</width>
+      </style>
+      <style name="choice_button_padder_inner" devices="iPad">
+        <width>fill</width>
+        <layout>vertical</layout>
+        <margin>5,18,5,18</margin>
+        <horizontalAlign>middle</horizontalAlign>
+        <verticalAlign>middle</verticalAlign>
+      </style>
+      <style name="choice_text">
+        <horizontalAlign>start</horizontalAlign>
+        <width>fill</width>
+        <color>#55acee</color>
+        <fontSize>13</fontSize>
+        <maxLines>1</maxLines>
+        <overflow>ellipsis</overflow>
+      </style>
+      <style name="tweet_my_answer">
+        <fontSize>14</fontSize>
+      </style>
+      <style name="initial_form">
+        <visibleChildIndex>0</visibleChildIndex>
+      </style>
+      <style name="spinner">
+        <visibleChildIndex>1</visibleChildIndex>
+      </style>
+      <style name="choose_politician_state">
+        <visibleChildIndex>2</visibleChildIndex>
+      </style>
+      <style name="spinner_text">
+        <horizontalAlign>middle</horizontalAlign>
+        <verticalAlign>middle</verticalAlign>
+        <width>fill</width>
+        <color>#4c4c4c</color>
+        <fontSize>14</fontSize>
+        <maxLines>1</maxLines>
+        <fontBold>true</fontBold>
+        <overflow>ellipsis</overflow>
+        <layout>horizontal</layout>
+        <margin>0,6,0,8</margin>
+        <height>34</height>
+      </style>
+      <style name="invisible">
+        <visible>false</visible>
+      </style>
+      <style name="visible">
+        <visible>true</visible>
+      </style>
+      <style name="error">
+        <color>#ff0000</color>
+      </style>
+      <style name="cta_text">
+        <width>fit</width>
+        <color>#55acee</color>
+        <fontSize>14</fontSize>
+        <maxLines>1</maxLines>
+        <fontBold>false</fontBold>
+        <overflow>ellipsis</overflow>
+      </style>
+      <style name="follow_up_button_padder">
+        <backgroundColor>#f1f1f1</backgroundColor>
+        <borderWidth>1</borderWidth>
+        <backgroundGradient>0deg, #dddddd 1.0, #ffffff 0.0</backgroundGradient>
+        <cornerRadius>5</cornerRadius>
+        <borderColor>#cccccc</borderColor>
+        <width>fill</width>
+        <horizontalAlign>middle</horizontalAlign>
+        <verticalAlign>middle</verticalAlign>
+        <height>34</height>
+        <margin>5,5,5,5</margin>
+      </style>
+      <style name="follow_up_button_text">
+        <width>fit</width>
+        <color>#3366FF</color>
+        <fontSize>15</fontSize>
+        <maxLines>1</maxLines>
+        <fontBold>false</fontBold>
+        <overflow>ellipsis</overflow>
+      </style>
+      <style name="explanation_container">
+        <margin>10,0,0,0</margin>
+      </style>
+    </styles>
+  
+    <actions>
+      <action 
+        id="vote_action_1" 
+        platforms="iPhone-5,iPad-5,Android-5,Webkit-5,Swift-5"
+        onSuccess="show_spinner" 
+        onFailure="submit_failure"
+        >
+        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="submit_failure">
+          <apiMethod>POST</apiMethod>
+          <apiUrl>{{politickle_submit_url}}</apiUrl>
+          <apiParameter>
+            <key>selection</key>
+            <boundValue>{{choice_one_text}}</boundValue>
+          </apiParameter>
+        </apiRequest>
+      </action>
+      <action id="open_detailed_answer_page" >
+        <openUrl>
+          <tco>{{card_url}}</tco>
+          <display>{{card_url}}</display>
+        </openUrl>
+      </action>
+
+
+      <action id="onload_visible_child_index">
+        <applyStyles>
+          <style element="unsubmitted_form">initial_form</style>
+        </applyStyles>
+      </action>
+      <action id="go_to_submitted_state">
+        <applyStyles>
+          <style element="unsubmitted_form">initial_form</style>
+          <style element="follow_up_buttons">visible</style>
+          <style element="choices_container">invisible</style>
+          <style element="failure_message_container">invisible</style>
+        </applyStyles>
+      </action>
+      <action id="go_to_tweeted_submitted_state">
+        <applyStyles>
+          <style element="unsubmitted_form">initial_form</style>
+          <style element="tweet_my_answer_button">invisible</style>
+          <style element="choices_container">invisible</style>
+          <style element="failure_message_container">invisible</style>
+        </applyStyles>
+      </action>
+      <action 
+        id="vote_action_2" 
+        platforms="iPhone-5,iPad-5,Android-5,Webkit-5,Swift-5"
+        onSuccess="show_spinner" 
+        onFailure="submit_failure"
+        >
+        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="submit_failure">
+          <apiMethod>POST</apiMethod>
+          <apiUrl>{{politickle_submit_url}}</apiUrl>
+          <apiParameter>
+            <key>selection</key>
+            <boundValue>{{choice_two_text}}</boundValue>
+          </apiParameter>
+        </apiRequest>
+      </action>
+      <action id="show_spinner">
+        <applyStyles>
+          <style element="unsubmitted_form">spinner</style>
+        </applyStyles>
+      </action>
+      <action id="submit_failure">
+        <applyStyles>
+          <style element="unsubmitted_form">initial_form</style>
+          <style element="failure_message_container">visible</style>
+        </applyStyles>
+      </action>
+      <action id="tweet_my_answer" onSuccess="go_to_tweeted_submitted_state">
+        <composeTweet textId="TWEET_MY_ANSER_TEXT">
+          My vote for {{card_url}} is {{totweet}
+        </composeTweet>
+      </action>
+      <action id="ask_politician1">
+        <composeTweet textId="ASK_POLITICIAN_TEXT1">
+          .@{{politician1.screen_name}} {{card_url}}
+        </composeTweet>
+      </action>
+      <action id="ask_politician2">
+        <composeTweet textId="ASK_POLITICIAN_TEXT2">
+          .@{{politician2.screen_name}} {{card_url}}
+        </composeTweet>
+      </action>
+      <action id="choose_politician">
+        <applyStyles>
+          <style element="unsubmitted_form">choose_politician_state</style>
+        </applyStyles>
+      </action>
+    </actions>
+
+    <roots>
+      <root platforms="iPhone-5,iPad-5,Android-5,Webkit-5,Swift-5" onLoad="onload_visible_child_index">
+        <container id="unsubmitted_form" width="fill" padding="0,0,0,3" visibleChildIndex="0">
+          <!-- State 0: Card rendered OR lead is submitted - waiting for response -->
+          <container width="fill">
+            <container width="fill">
+              <text 
+                textId="TITLE"
+                class="title_text"
+                >@{{asker.screen_name}} asks @{{politician1.screen_name}} and @{{politician2.screen_name}}</text>
+              <text 
+                textId="QUESTION"
+                class="question_text"
+                >{{question}}</text>
+            </container>
+            <container id="choices_container" class="choices_container_style">
+              <container class="choice_button_row">
+                <container class="choice_button_padder">
+                  <container class="choice_button_padder_inner">
+                    <text 
+                      id="choice_1"
+                      textId="CHOICE_ONE_TEXT"
+                      class="choice_text"
+                      onTap="vote_action_1" 
+                      >[A] {{choice_one_text}}</text>
+                  </container>
+                </container>
+              </container>
+              <container class="choice_button_row">
+                <container class="choice_button_padder">
+                  <container class="choice_button_padder_inner">
+                    <text 
+                      id="choice_2"
+                      textId="CHOICE_TWO_TEXT"
+                      class="choice_text"
+                      onTap="vote_action_2" 
+                      >[B] {{choice_two_text}}</text>
+                  </container>
+                </container>
+              </container>
+              <container width="fill" class="explanation_container" >
+                <container class="follow_up_button_padder" onTap="open_detailed_answer_page">
+                  <text 
+                    textId="ANSWER_WITH_EXPLANATION" 
+                    class="follow_up_button_text"
+                    >Answer with explanation</text>
+                </container>
+              </container>
+            </container>
+            <container id="follow_up_buttons" visible="false" width="fill">
+              <container id="tweet_my_answer_button" class="follow_up_button_padder">
+                <text 
+                  textId="TWEET_MY_ANSWER" 
+                  onTap="tweet_my_answer"
+                  class="follow_up_button_text"
+                  >Tweet my answer</text>
+              </container>
+              <container class="follow_up_button_padder">
+                <text 
+                  textId="ASK_POLITICIAN" 
+                  class="follow_up_button_text"
+                  onTap="choose_politician"
+                  >Ask a politician</text>
+              </container>
+            </container>
+            <container id="failure_message_container" width="fill" visible="false">
+              <text id="failure_message" class="error" width="fill" textId="FAILURE_TO_SUBMIT">Failed to submit your vote.</text>
+            </container>
+          </container>
+
+          <!-- State 1: Lead sent to the API. Waiting for response -->
+          <container width="fill">
+            <text textId="LEAD_SPINNER_TEXT" class="spinner_text">Submitting...</text>
+          </container>
+
+          <!-- State 2: Lead sent to the API. Waiting for response -->
+          <container width="fill">
+            <text textId="CHOICE_POLITICIAN_TEXT" class="title_text" >Choose a politician:</text>
+              <container class="choice_button_row">
+                <container class="choice_button_padder">
+                  <container class="choice_button_padder_inner">
+                    <text 
+                      textId="CHOICE_POLITICIAN_1"
+                      class="choice_text"
+                      onTap="ask_politician1"
+                      >[1] {{politician1.screen_name}} </text>
+                  </container>
+                </container>
+              </container>
+              <container class="choice_button_row">
+                <container class="choice_button_padder">
+                  <container class="choice_button_padder_inner">
+                    <text 
+                      textId="CHOICE_POLITICIAN_2"
+                      class="choice_text"
+                      onTap="ask_politician2"
+                      >[2] {{politician2.screen_name}} </text>
+                  </container>
+                </container>
+              </container>
+          </container>
+
+        </container>
+      </root>
+    </roots>
+  </card>
+</document>

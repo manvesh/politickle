@@ -1,6 +1,6 @@
 package controllers
 
-import models.{Responses, Choices, Polls, Users}
+import models._
 import play.api.Play.current
 import play.api.mvc.{Action, Controller}
 import play.api.libs.json.Json
@@ -11,6 +11,7 @@ import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import play.api.data._
 import scala.slick.lifted.Query
+import controllers.Message
 
 case class Message(value: String)
 
@@ -24,7 +25,8 @@ object MessageController extends Controller {
         Users.ddl.createStatements.mkString(";\n"),
         Polls.ddl.createStatements.mkString(";\n"),
         Choices.ddl.createStatements.mkString(";\n"),
-        Responses.ddl.createStatements.mkString(";\n")
+        Responses.ddl.createStatements.mkString(";\n"),
+        PollTargets.ddl.createStatements.mkString(";\n")
       )))
   }
 }

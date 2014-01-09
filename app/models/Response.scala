@@ -6,10 +6,11 @@ import play.api.db.slick.Config.driver.simple._
 import slick.lifted.{Join, MappedTypeMapper}
 import scala.slick.lifted.ForeignKeyAction
 import scala.slick.lifted.ColumnOption.DBType
+import play.Logger
 
 case class Response(
   id: Option[Long],
-  twitterUserId: Long,
+  twitterUserId: String,
   pollId: Long,
   choiceId: Long,
   explanationText: Option[String],
@@ -27,7 +28,7 @@ trait ResponseComponent {
   class Responses extends Table[Response]("RESPONSES") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-    def twitterUserId = column[Long]("twitter_user_id", O.NotNull)
+    def twitterUserId = column[String]("twitter_user_id", O.NotNull)
 
     def pollId = column[Long]("poll_id", O.NotNull)
 
@@ -41,15 +42,17 @@ trait ResponseComponent {
 
     def createdAt = column[Timestamp]("created_at", O.NotNull)
 
-    def updatedAt = column[Timestamp]("updated_at", O.NotNull)
+    def updatedAt = column[Timestamp]("updated_at", O.Nullable)
 
-    def idx = index("IDX_UNIQUE_RESPONSE", (twitterUserId, pollId, choiceId), unique = true)
+    def idx = index("IDX_UNIQUE_RESPONSE", (twitterUserId, pollId), unique = true)
 
     def * = id.? ~ twitterUserId ~ pollId ~ choiceId ~ explanationText.? ~ createdAt.? ~ updatedAt.? <>(Response.apply _, Response.unapply _)
 
-    def autoInc = * returning id
+    def autoInc = twitterUserId ~ pollId ~ choiceId ~ explanationText.? ~ createdAt.? ~ updatedAt.? returning id
 
     val byId = createFinderBy(_.id)
+
+    val byTwitterUserId = createFinderBy(_.twitterUserId)
   }
 
 }
@@ -58,9 +61,13 @@ object Responses extends DAO {
 
   def ddl = Responses.ddl
 
-
   def findById(id: Long)(implicit s: Session): Option[Response] =
     Responses.byId(id).firstOption
+
+  def findByIdAndTwitterUserId(pollId: Long, twitterUserId: String)(implicit s: Session): Option[Response] = {
+    Logger.info(Query(Responses).filter(_.pollId === pollId).filter(_.twitterUserId === twitterUserId).selectStatement)
+    Query(Responses).filter(_.pollId === pollId).filter(_.twitterUserId === twitterUserId).firstOption
+  }
 
   def count(implicit s: Session): Int =
     Query(Responses.length).first
@@ -82,14 +89,28 @@ object Responses extends DAO {
     Page(result, page, offset, result.size)
   }
 
-  def insert(response: Response)(implicit s: Session) {
+  def insert(response: Response)(implicit s: Session) = {
     val responseToInsert = response.copy(createdAt = Some(currentTimestamp))
-    Responses.autoInc.insert(responseToInsert)
+    Responses.autoInc.insert(
+      responseToInsert.twitterUserId,
+      responseToInsert.pollId,
+      responseToInsert.choiceId,
+      responseToInsert.explanationText,
+      responseToInsert.createdAt,
+      responseToInsert.updatedAt
+    ).asInstanceOf[Int]
   }
 
   def update(id: Long, response: Response)(implicit s: Session) {
     val responseToUpdate: Response = response.copy(Some(id), updatedAt = Some(currentTimestamp))
     Responses.where(_.id === id).update(responseToUpdate)
+  }
+
+  def upsert(response: Response)(implicit s: Session) {
+    findByIdAndTwitterUserId(response.pollId, response.twitterUserId) match {
+      case Some(existingResponse) => update(existingResponse.id.get, response)
+      case None => insert(response)
+    }
   }
 
   def delete(id: Long)(implicit s: Session) {

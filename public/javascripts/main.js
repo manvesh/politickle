@@ -20,8 +20,18 @@ require(
       debug.enable(true);
       compose.mixin(registry, [advice.withAdvice, withLogging]);
 
-      require(['page/default'], function(initializeDefault) {
-        initializeDefault();
+      var pageComponentsToRequire = ['page/default'];
+
+      var initData = JSON.parse($("#init-data").val());
+      if (typeof(initData.pageName) != "undefined") {
+        pageComponentsToRequire.push('page/' + initData.pageName);
+      }
+
+      require(pageComponentsToRequire, function() {
+        var args = Array.prototype.slice.call(arguments, 0);
+        args.forEach(function (pageInitializer) {
+          pageInitializer.call(initData);
+        });
       });
   }
 );

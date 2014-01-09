@@ -58,8 +58,9 @@ trait UsersComponent {
 
     val byToken = createFinderBy(_.accessToken)
 
-    def autoInc = * returning id
+    def autoInc = twitterId ~ twitterName ~ twitterHandle.? ~ twitterAvatarUrl.? ~ createdAt.? ~ updatedAt.? ~ accessToken.? ~ secret.? returning id
   }
+
 }
 
 object Users extends DAO {
@@ -80,7 +81,15 @@ object Users extends DAO {
 
   def insert(user: User)(implicit s: Session) {
     val userToInsert: User = user.copy(createdAt = Some(currentTimestamp), updatedAt = Some(currentTimestamp))
-    Users.autoInc.insert(userToInsert)
+    Users.autoInc.insert(
+      userToInsert.twitterId,
+      userToInsert.twitterName,
+      userToInsert.twitterHandle,
+      userToInsert.twitterAvatarUrl,
+      userToInsert.createdAt,
+      userToInsert.updatedAt,
+      userToInsert.accessToken,
+      userToInsert.secret)
   }
 
   def update(id: Long, user: User)(implicit s: Session) {
@@ -96,17 +105,27 @@ object Users extends DAO {
 object UserSecureSocialHelper {
 
   def getIdentity(user: User): Identity = new Identity {
-      def identityId: IdentityId = IdentityId(user.twitterId, TwitterProvider.Id)
-      def firstName: String = ""
-      def lastName: String = ""
-      def fullName: String = user.twitterName
-      def email: Option[String] = None
-      def avatarUrl: Option[String] = user.twitterAvatarUrl
-      def authMethod: AuthenticationMethod = AuthenticationMethod.OAuth2
-      def oAuth1Info: Option[OAuth1Info] = None
-      def oAuth2Info: Option[OAuth2Info] = user.accessToken.map {accessToken =>
+    def identityId: IdentityId = IdentityId(user.twitterId, TwitterProvider.Id)
+
+    def firstName: String = ""
+
+    def lastName: String = ""
+
+    def fullName: String = user.twitterName
+
+    def email: Option[String] = None
+
+    def avatarUrl: Option[String] = user.twitterAvatarUrl
+
+    def authMethod: AuthenticationMethod = AuthenticationMethod.OAuth2
+
+    def oAuth1Info: Option[OAuth1Info] = None
+
+    def oAuth2Info: Option[OAuth2Info] = user.accessToken.map {
+      accessToken =>
         OAuth2Info(accessToken, Some("bearer"), None, None)
-      }
-      def passwordInfo: Option[PasswordInfo] = None
     }
+
+    def passwordInfo: Option[PasswordInfo] = None
+  }
 }

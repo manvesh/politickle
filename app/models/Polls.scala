@@ -36,7 +36,7 @@ trait PollsComponent {
 
     def * = id.? ~ ownerId ~ description ~ hashTag.? ~ createdAt.? ~ updatedAt.? <>(Poll.apply _, Poll.unapply _)
 
-    def autoInc = * returning id
+    def autoInc = ownerId ~ description ~ hashTag.? ~ createdAt.? ~ updatedAt.? returning id
 
     val byId = createFinderBy(_.id)
   }
@@ -71,9 +71,15 @@ object Polls extends DAO {
     Page(result, page, offset, totalRows)
   }
 
-  def insert(poll: Poll)(implicit s: Session) = {
+  def insert(poll: Poll)(implicit s: Session): Int = {
     val pollToInsert = poll.copy(createdAt = Some(currentTimestamp))
-    Polls.autoInc.insert(pollToInsert)
+    Polls.autoInc.insert(
+      pollToInsert.ownerId,
+      pollToInsert.description,
+      pollToInsert.hashTag,
+      pollToInsert.createdAt,
+      pollToInsert.updatedAt
+    ).asInstanceOf[Int]
   }
 
   def update(id: Long, poll: Poll)(implicit s: Session) {

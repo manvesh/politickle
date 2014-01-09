@@ -7,10 +7,14 @@ import play.api.data._
 import play.api.data.Mapping
 import play.api.data.Forms._
 import play.api.Play.current
-import models.{Users, Poll, Choice, Polls}
+import models._
 import play.Logger
 import scala.concurrent.Future
 import securesocial.core.{SecureSocial, SecuredRequest}
+import scala.Some
+import models.Choice
+import securesocial.core.SecuredRequest
+import models.Poll
 
 
 object PollsController extends Controller with securesocial.core.SecureSocial {
@@ -21,7 +25,7 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
                           choices: Seq[ChoiceFormData],
                           pollTargets: Option[Seq[PollTargetFormData]])
   case class ChoiceFormData(description: String)
-  case class PollTargetFormData(handle: String)
+  case class PollTargetFormData(twitterUserId: Long, handle: Option[String])
 
   private val pollForm = Form(
     mapping(
@@ -34,7 +38,8 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
       ),
       "pollTargets" -> optional(seq(
         mapping(
-          "handle" -> text
+          "twitterUserId" -> longNumber,
+          "handle" -> optional(text)
         )(PollTargetFormData.apply)(PollTargetFormData.unapply)
       ))
     )(PollFormData.apply)(PollFormData.unapply)
@@ -59,11 +64,14 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
       pollFromDB match {
         case Some(poll) => {
           val ownerUser = Users.findById(poll.ownerId).get
+          val choices = Choices.findByPollId(poll.id.get)
           if (userFromDB.isEmpty) {
             val session = request.session + ("original-url", request.uri)
-            Ok(views.html.Polls.show(poll, ownerUser.twitterName, ownerUser.twitterHandle.get, None)).withSession(session)
+            Ok(views.html.Polls.show(poll, choices, ownerUser, None, None)).withSession(session)
           } else {
-            Ok(views.html.Polls.show(poll, ownerUser.twitterName, ownerUser.twitterHandle.get, userFromDB))
+            val userResponse = Responses.findByIdAndTwitterUserId(poll.id.get, userFromDB.get.twitterId)
+            Logger.info("UserResponse is " + userResponse.toString + " for poll.id.get" + poll.id.get.toString + " and user " + userFromDB.get.twitterId)
+            Ok(views.html.Polls.show(poll, choices, ownerUser, userFromDB, userResponse))
           }
         }
         case _ => NotFound
@@ -74,10 +82,21 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
   def create = SecuredAction { implicit request =>
     val pollFormData = pollForm.bindFromRequest.get
     Logger.info(pollFormData.toString)
-    val pollId: Int = play.api.db.slick.DB.withSession { implicit s: Session =>
-      Polls.insert(pollFormData).asInstanceOf[Int]
-    }
 
-    Redirect(routes.PollsController.show(pollId))
+    play.api.db.slick.DB.withTransaction { implicit s: Session =>
+      val pollId = Polls.insert(pollFormData)
+      val choices = pollFormData.choices.map { choiceFormData =>
+        Choice(None, pollId, choiceFormData.description)
+      }
+      Choices.insertAll(choices: _*)
+      pollFormData.pollTargets map { pollTargetFormData =>
+        val pollTargets = pollTargetFormData.map { pollTargetFormDatum =>
+          PollTarget(None, pollTargetFormDatum.twitterUserId, pollId)
+        }
+        PollTargets.insertAll(pollTargets: _*)
+      }
+
+      Redirect(routes.PollsController.show(pollId))
+    }
   }
 }
