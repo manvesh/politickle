@@ -30,11 +30,6 @@
         <metaTag>twitter:politickle:submiturl</metaTag>
       </sources>
     </text>
-    <text name="politickle_detailed_answer_url">
-      <sources>
-        <metaTag>twitter:politickle:detailed_answer_url</metaTag>
-      </sources>
-    </text>
     <text name="totweet">
       <sources>
         <metaTag>twitter:politickle:totweet</metaTag>
@@ -209,8 +204,8 @@
       </action>
       <action id="open_detailed_answer_page" >
         <openUrl>
-          <tco>{{politickle_detailed_answer_url}}</tco>
-          <display>{{politickle_detailed_answer_url}}</display>
+          <tco>{{card_url}}</tco>
+          <display>{{card_url}}</display>
         </openUrl>
       </action>
 
@@ -242,8 +237,7 @@
         onSuccess="show_spinner" 
         onFailure="submit_failure"
         >
-        <!-- todo change onRequestFailure to submit_failure -->
-        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="go_to_submitted_state">
+        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="submit_failure">
           <apiMethod>POST</apiMethod>
           <apiUrl>{{politickle_submit_url}}</apiUrl>
           <apiParameter>
