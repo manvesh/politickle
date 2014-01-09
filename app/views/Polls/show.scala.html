@@ -36,10 +36,8 @@
       @for(choice <- choices) {
         <p>
         <label class="btn btn-default">
-          <input type="radio" name="choice_id" value="@choice.id" @if(userResponse.isDefined && userResponse.get.choiceId == choice.id) {
-            "checked"
-          } else {
-            "foo"
+          <input type="radio" name="choice_id" value="@choice.id" @if(userResponse.isDefined && userResponse.get.choiceId == choice.id.get) {
+            checked
           }
             > @choice.description
         </label>
@@ -51,13 +49,14 @@
       </script>
     @if( user.isEmpty ){
       <p>
-     <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
-      <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter"></a>
+        <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
+          <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter">
+        </a>
       </p>
     } else {
       <div class="form-group input-group">
         <span class="input-group-addon">Add explanation</span>
-        <input name="explanation" type="text" class="form-control" placeholder="...">
+        <input name="explanation" type="text" class="form-control" placeholder="..." value="@if(userResponse.isDefined) { @userResponse.get.explanationText }">
       </div>
       @CSRF.formField
       <div class="form-group">
