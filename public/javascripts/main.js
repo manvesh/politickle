@@ -20,10 +20,11 @@ require(
       debug.enable(true);
       compose.mixin(registry, [advice.withAdvice, withLogging]);
 
+      var initData = JSON.parse($("#init-data").val());
+
       require(
         [
-          'page/home/default',
-          'page/poll/create'
+          'page/' + initData.pageName,
         ], function(initializeDefault, initializePollCreate) {
 
         initializeDefault();
