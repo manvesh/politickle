@@ -2,15 +2,24 @@ package controllers
 
 import play.api.Play.current
 import play.api.mvc.{Action, Controller}
-import play.api.libs.json.Json
+import play.api.libs.json._
 import play.api.db.slick.Config.driver.simple._
-import models.{Choices, Responses, Response, Polls}
+import models._
 import play.api.data._
 import play.api.data.Forms._
 import java.sql.Timestamp
 import java.util.Date
 import play.api.db.slick.DBAction
 import play.api.Logger
+import twitter4j.conf.ConfigurationBuilder
+import twitter4j.{StatusUpdate, TwitterFactory}
+import models.Response
+import controllers.ResponseData
+import play.api.libs.json.JsArray
+import models.Response
+import controllers.ResponseData
+import models.Choice
+import play.api.libs.json.JsObject
 
 object ResponsesController extends Controller with securesocial.core.SecureSocial {
 
@@ -48,7 +57,9 @@ object ResponsesController extends Controller with securesocial.core.SecureSocia
             Responses.upsert(response)
             val tweetDescription = poll.get.description + "My answer: " + choice.get.description
             val tweetString = ellipse(tweetDescription, 115) + pollUrl(response.pollId)
-
+            val choiceCounts: Seq[(Long, Int, String)] = Choices.findByPollId(response.pollId).map { choice: Choice =>
+              (choice.id.get, Responses.countsPerPollIdAndChoiceId(response.pollId, choice.id.get), choice.description) }
+            Logger.info("ResponseData : " + responseData.toString)
             Ok(
               if (isCard) {
                 Json.toJson(
@@ -57,10 +68,11 @@ object ResponsesController extends Controller with securesocial.core.SecureSocia
                   )
                 )
               } else {
-                Json.toJson(
-                  Map(
-                    "success" -> "true"
-                  )
+                Json.obj(
+                  "success" -> "true",
+                  "responses" -> choiceCounts.map { choiceCount =>
+                    Json.obj("choiceId" -> JsNumber(choiceCount._1), "count" -> JsNumber(choiceCount._2), "description" -> choiceCount._3)
+                  }
                 )
               }
             ).as("application/json")

@@ -64,14 +64,11 @@ object Responses extends DAO {
   def findById(id: Long)(implicit s: Session): Option[Response] =
     Responses.byId(id).firstOption
 
-  def findByIdAndTwitterUserId(pollId: Long, twitterUserId: String)(implicit s: Session): Option[Response] = {
-    Logger.info(Query(Responses).filter(_.pollId === pollId).filter(_.twitterUserId === twitterUserId).selectStatement)
+  def findByIdAndTwitterUserId(pollId: Long, twitterUserId: String)(implicit s: Session): Option[Response] =
     Query(Responses).filter(_.pollId === pollId).filter(_.twitterUserId === twitterUserId).firstOption
-  }
 
   def count(implicit s: Session): Int =
     Query(Responses.length).first
-
 
   def findAllByPollId(pollId: Long, page: Int = 0, pageSize: Int = 10, orderBy: Int = 1)(implicit s: Session): Page[Response] = {
 
@@ -88,6 +85,9 @@ object Responses extends DAO {
 
     Page(result, page, offset, result.size)
   }
+
+  def countsPerPollIdAndChoiceId(pollId: Long, choiceId: Long)(implicit s: Session): Int =
+    Query(Responses).filter(_.pollId === pollId).filter(_.choiceId === choiceId).list.length
 
   def insert(response: Response)(implicit s: Session) = {
     val responseToInsert = response.copy(createdAt = Some(currentTimestamp))
@@ -108,7 +108,8 @@ object Responses extends DAO {
 
   def upsert(response: Response)(implicit s: Session) {
     findByIdAndTwitterUserId(response.pollId, response.twitterUserId) match {
-      case Some(existingResponse) => update(existingResponse.id.get, response)
+      case Some(existingResponse) =>
+        update(existingResponse.id.get, response.copy(existingResponse.id, createdAt = existingResponse.createdAt))
       case None => insert(response)
     }
   }

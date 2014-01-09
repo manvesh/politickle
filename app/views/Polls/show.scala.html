@@ -2,7 +2,7 @@
 @import helper._
 
 @metaTags(poll: Poll, choices: Seq[Choice], ownerName: String, ownerTwitterHandle: String, ownerTwitterId: String) = {
-    <meta name="twitter:card" content="politickle">
+    <meta name="twitter:card" content="com.politickle:politickle">
     <meta name="twitter:politickle:asker:id" content="@ownerTwitterId">
     <meta name="twitter:politickle:asker:name" content="@ownerName">
     <meta name="twitter:politickle:question" content="@poll.description">
@@ -10,46 +10,46 @@
     <meta name="twitter:politickle:choice2:text" content="@choices.last.description">
     <meta name="twitter:politickle:submiturl" content="http://cards-staging.twitter.com/cards/caps?@routes.ResponsesController.create(poll.id.get, true)">
     <meta name="twitter:politickle:cardurl" content="http://cards-staging.twitter.com/cards/caps?@routes.PollsController.show(poll.id.get)">
-    <meta name="twitter:politickle:politician2:id" content="111092283">
-    <meta name="twitter:politickle:politician2:name" content="@@WeWork">
+    <meta name="twitter:politickle:politician1:id" content="9651">
+    <meta name="twitter:politickle:politician1:name" content="cbrumelle">
+    <meta name="twitter:politickle:politician2:id" content="14877873">
+    <meta name="twitter:politickle:politician2:name" content="vyas">
 }
 
-@*
 @initData = {
   <input type="hidden" class="json-data" id="init-data" value='{"pageName": "polls/show"}'/>
 }
-*@
 
-@layout(title=poll.description, headContent=metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId)) {
+@layout(title=poll.description, headContent=metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId), initData=initData) {
 
   @if( userResponse.isDefined ) {
-    <div class="alert alert-success"><span class="glyphicon glyphicon-saved"></span> You have answered this question earlier, but you can <em>reanswer</em>.</span></div>
+    <div class="alert alert-success">You have <strong>answered</strong> this question earlier, but you can <strong><em>reanswer</em></strong>.</div>
   }
-  <h2>@poll.description</h2>
-  <form method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
+  <h2 id="poll-description">@poll.description</h2>
+  <form id="user-response" name="user-response" method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
       <input name="poll_id" value="@poll.id" type="hidden" />
-      <div class="form-group btn-group" data-toggle="buttons">
-      @for(choice <- choices) {
+      <div class="container">
+        <div id="choice-btns" class="col-md8 form-group btn-group" data-toggle="buttons">
+        @for(choice <- choices) {
         <p>
-        <label class="btn btn-default">
-          <input type="radio" name="choice_id" value="@choice.id" @if(userResponse.isDefined && userResponse.get.choiceId == choice.id.get) {
-            checked
-          }
-            > @choice.description
-        </label>
+          <label class="btn btn-default">
+            <input type="radio" name="choice_id" id="choice_id_@choice.id" value="@choice.id" @if(userResponse.isDefined && userResponse.get.choiceId == choice.id.get) {
+              checked
+            }
+              > @choice.description
+          </label>
         </p>
-      }
+        }
+        </div>
+        <div id="chart" class="col-md4 pull-right"></div>
       </div>
-      <script type="text/javascript">
-        $('.btn').button();
-      </script>
-    @if( user.isEmpty ){
+      @if( user.isEmpty ){
       <p>
         <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
           <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter">
         </a>
       </p>
-    } else {
+      } else {
       <div class="form-group input-group">
         <span class="input-group-addon">Add explanation</span>
         <input name="explanation" type="text" class="form-control" placeholder="..." value="@if(userResponse.isDefined) { @userResponse.get.explanationText }">

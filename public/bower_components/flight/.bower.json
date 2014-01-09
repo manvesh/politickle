@@ -26,6 +26,5 @@
   },
   "_source": "git://github.com/flightjs/flight.git",
   "_target": "~1.1.1",
-  "_originalSource": "flight",
-  "_direct": true
+  "_originalSource": "flight"
 }
