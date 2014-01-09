@@ -3,7 +3,8 @@ requirejs.config({
   paths: {
     'flight': '/assets/bower_components/flight',
     'component': '/assets/javascripts/component',
-    'page': '/assets/javascripts/page'
+    'page': '/assets/javascripts/page',
+    'd3': '/assets/bower_components/d3'
   }
 });
 
@@ -13,7 +14,8 @@ require(
     'flight/lib/registry',
     'flight/lib/advice',
     'flight/lib/logger',
-    'flight/lib/debug'
+    'flight/lib/debug',
+    'd3/d3.min'
   ],
 
   function(compose, registry, advice, withLogging, debug) {
