@@ -32,4 +32,6 @@ resolvers += "repository.jboss.org-public" at "https://repository.jboss.org/nexu
 
 resolvers += "maven-restlet" at "http://maven.restlet.org"
 
+resolvers += "Maven Central Server" at "http://repo1.maven.org/maven2"
+
 play.Project.playScalaSettings

@@ -29,11 +29,11 @@ trait PollTargetsComponent {
 
     def createdAt = column[Timestamp]("created_at", O.NotNull)
 
-    def updatedAt = column[Timestamp]("updated_at", O.NotNull)
+    def updatedAt = column[Timestamp]("updated_at", O.Nullable)
 
     def * = id.? ~ twitterUserId ~ pollId ~ createdAt.? ~ updatedAt.? <>(PollTarget.apply _, PollTarget.unapply _)
 
-    def autoInc = * returning id
+    def autoInc = twitterUserId ~ pollId ~ createdAt.? ~ updatedAt.? returning id
 
     val byId = createFinderBy(_.id)
   }
@@ -62,11 +62,26 @@ object PollTargets extends DAO {
 
   def insert(target: PollTarget)(implicit s: Session): Int = {
     val targetToUpdate = target.copy(createdAt = Some(currentTimestamp))
-    PollTargets.autoInc.insert(targetToUpdate).asInstanceOf[Int]
+    PollTargets.autoInc.insert(
+      targetToUpdate.twitterUserId,
+      targetToUpdate.pollId,
+      targetToUpdate.createdAt,
+      targetToUpdate.updatedAt
+    ).asInstanceOf[Int]
   }
 
   def insertAll(pollTargets: PollTarget*)(implicit s: Session) = {
-    PollTargets.autoInc.insertAll(pollTargets: _*)
+    val toInsert = pollTargets.map(_.copy(createdAt = Some(currentTimestamp)))
+
+    PollTargets.autoInc.insertAll(
+      toInsert.map(target =>
+        (target.twitterUserId,
+          target.pollId,
+          target.createdAt,
+          target.updatedAt)
+      )
+        : _*
+    )
   }
 
   def update(id: Long, target: PollTarget)(implicit s: Session) {

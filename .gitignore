@@ -1,6 +1,5 @@
 # Ignore Play! working directory #
 bin
-conf/securesocial.conf
 db
 eclipse
 .idea
@@ -18,3 +17,5 @@ server.pid
 *.iml
 *.eml
 .DS_Store
+secrets.sh
+heroku_setup.sh
