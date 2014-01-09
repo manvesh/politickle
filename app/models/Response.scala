@@ -70,7 +70,6 @@ object Responses extends DAO {
   def count(implicit s: Session): Int =
     Query(Responses.length).first
 
-
   def findAllByPollId(pollId: Long, page: Int = 0, pageSize: Int = 10, orderBy: Int = 1)(implicit s: Session): Page[Response] = {
 
     val offset = pageSize * page
@@ -86,6 +85,9 @@ object Responses extends DAO {
 
     Page(result, page, offset, result.size)
   }
+
+  def countsPerPollIdAndChoiceId(pollId: Long, choiceId: Long)(implicit s: Session): Int =
+    Query(Responses).filter(_.pollId === pollId).filter(_.choiceId === choiceId).list.length
 
   def insert(response: Response)(implicit s: Session) = {
     val responseToInsert = response.copy(createdAt = Some(currentTimestamp))
