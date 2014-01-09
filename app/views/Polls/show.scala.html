@@ -6,10 +6,10 @@
     <meta name="twitter:politickle:asker:id" content="@ownerTwitterId">
     <meta name="twitter:politickle:asker:name" content="@ownerName">
     <meta name="twitter:politickle:question" content="@poll.description">
-    <meta name="twitter:politickle:selection" content="sel">
     <meta name="twitter:politickle:choice1:text" content="@choices.head.description">
     <meta name="twitter:politickle:choice2:text" content="@choices.last.description">
-    <meta name="twitter:politickle:url" content="http://cards-staging.twitter.com/cards/caps?@routes.ResponsesController.create(poll.id.get, true)">
+    <meta name="twitter:politickle:submiturl" content="http://cards-staging.twitter.com/cards/caps?@routes.ResponsesController.create(poll.id.get, true)">
+    <meta name="twitter:politickle:cardurl" content="http://cards-staging.twitter.com/cards/caps?@routes.PollsController.show(poll.id.get)">
     <meta name="twitter:politickle:politician2:id" content="111092283">
     <meta name="twitter:politickle:politician2:name" content="@@WeWork">
 }
@@ -26,6 +26,9 @@
   @if(!poll.hashTag.isEmpty) {
     <dt>Hash Tag</dt>
     <dd>#@poll.hashTag</dd>
+  }
+  @if( userResponse.isDefined ) {
+    <span class="label label-default glyphicon glyphicon-saved"> You have answered this question.</span>
   }
   <form method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
       <input name="poll_id" value="@poll.id" type="hidden" />

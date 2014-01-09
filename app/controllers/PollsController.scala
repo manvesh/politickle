@@ -70,6 +70,7 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
             Ok(views.html.Polls.show(poll, choices, ownerUser, None, None)).withSession(session)
           } else {
             val userResponse = Responses.findByIdAndTwitterUserId(poll.id.get, userFromDB.get.twitterId)
+            Logger.info("UserResponse")
             Ok(views.html.Polls.show(poll, choices, ownerUser, userFromDB, userResponse))
           }
         }
