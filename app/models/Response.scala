@@ -9,7 +9,7 @@ import scala.slick.lifted.ColumnOption.DBType
 
 case class Response(
   id: Option[Long],
-  twitterUserId: Long,
+  twitterUserId: String,
   pollId: Long,
   choiceId: Long,
   explanationText: Option[String],
@@ -27,7 +27,7 @@ trait ResponseComponent {
   class Responses extends Table[Response]("RESPONSES") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-    def twitterUserId = column[Long]("twitter_user_id", O.NotNull)
+    def twitterUserId = column[String]("twitter_user_id", O.NotNull)
 
     def pollId = column[Long]("poll_id", O.NotNull)
 
@@ -50,6 +50,8 @@ trait ResponseComponent {
     def autoInc = * returning id
 
     val byId = createFinderBy(_.id)
+
+    val byTwitterUserId = createFinderBy(_.twitterUserId)
   }
 
 }
@@ -58,9 +60,11 @@ object Responses extends DAO {
 
   def ddl = Responses.ddl
 
-
   def findById(id: Long)(implicit s: Session): Option[Response] =
     Responses.byId(id).firstOption
+
+  def findByIdAndTwitterUserId(pollId: Long, twitterUserId: String)(implicit s: Session): Option[Response] =
+    Query(Responses).filter(_.pollId === pollId).filter(_.twitterUserId === twitterUserId).firstOption
 
   def count(implicit s: Session): Int =
     Query(Responses.length).first
