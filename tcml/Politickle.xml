@@ -370,7 +370,7 @@
                       textId="CHOICE_POLITICIAN_1"
                       class="choice_text"
                       onTap="ask_politician1"
-                      >[1] --- {{politician1.screen_name}} --- </text>
+                      >[1] {{politician1.screen_name}} </text>
                   </container>
                 </container>
               </container>
@@ -381,7 +381,7 @@
                       textId="CHOICE_POLITICIAN_2"
                       class="choice_text"
                       onTap="ask_politician2"
-                      >[2] --- {{politician2.screen_name}} --- </text>
+                      >[2] {{politician2.screen_name}} </text>
                   </container>
                 </container>
               </container>
