@@ -21,25 +21,19 @@
 *@
 
 @layout(title=poll.description, headContent=metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId)) {
-<dl>
-  <h2>@poll.description</h2>
-  @if(!poll.hashTag.isEmpty) {
-    <dt>Hash Tag</dt>
-    <dd>#@poll.hashTag</dd>
-  }
+
   @if( userResponse.isDefined ) {
     <div class="alert alert-success"><span class="glyphicon glyphicon-saved"></span> You have answered this question earlier, but you can <em>reanswer</em>.</span></div>
   }
+  <h2>@poll.description</h2>
   <form method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
       <input name="poll_id" value="@poll.id" type="hidden" />
       <div class="form-group btn-group" data-toggle="buttons">
       @for(choice <- choices) {
         <p>
         <label class="btn btn-default">
-          <input type="radio" name="choice_id" value="@choice.id" @if(userResponse.isDefined && userResponse.get.choiceId == choice.id) {
-            "checked"
-          } else {
-            "foo"
+          <input type="radio" name="choice_id" value="@choice.id" @if(userResponse.isDefined && userResponse.get.choiceId == choice.id.get) {
+            checked
           }
             > @choice.description
         </label>
@@ -51,13 +45,14 @@
       </script>
     @if( user.isEmpty ){
       <p>
-     <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
-      <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter"></a>
+        <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
+          <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter">
+        </a>
       </p>
     } else {
       <div class="form-group input-group">
         <span class="input-group-addon">Add explanation</span>
-        <input name="explanation" type="text" class="form-control" placeholder="...">
+        <input name="explanation" type="text" class="form-control" placeholder="..." value="@if(userResponse.isDefined) { @userResponse.get.explanationText }">
       </div>
       @CSRF.formField
       <div class="form-group">
@@ -66,9 +61,6 @@
       </p>
     }
   </form>
-
-  <dt>Created by</dt>
-  <dd>@@@ownerUser.twitterHandle</dd>
-    </p>
-</dl>
+  <br/>
+  <h5>Poll was created by <br/> <a href="https://twitter.com/@ownerUser.twitterHandle">@@@ownerUser.twitterHandle</a></h5>
 }
