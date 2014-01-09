@@ -6,7 +6,7 @@ define(function (require) {
 
   return initialize;
 
-  function initialize() {
+  function initialize(initData) {
     twitterHandleField.attachTo('input[name="pollTargetHandles"');
     twitterHandleValidator.attachTo(document);
   }

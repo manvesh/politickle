@@ -14,7 +14,13 @@
     <meta name="twitter:politickle:politician2:name" content="@@WeWork">
 }
 
-@layout(poll.description, metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId)) {
+@*
+@initData = {
+  <input type="hidden" class="json-data" id="init-data" value='{"pageName": "polls/show"}'/>
+}
+*@
+
+@layout(title=poll.description, headContent=metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId)) {
 <dl>
   <h2>@poll.description</h2>
   @if(!poll.hashTag.isEmpty) {
