@@ -106,7 +106,8 @@ object Responses extends DAO {
 
   def upsert(response: Response)(implicit s: Session) {
     findByIdAndTwitterUserId(response.pollId, response.twitterUserId) match {
-      case Some(existingResponse) => update(existingResponse.id.get, response)
+      case Some(existingResponse) =>
+        update(existingResponse.id.get, response.copy(existingResponse.id, createdAt = existingResponse.createdAt))
       case None => insert(response)
     }
   }
