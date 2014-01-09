@@ -23,7 +23,7 @@
 @layout(title=poll.description, headContent=metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId), initData=initData) {
 
   @if( userResponse.isDefined ) {
-    <div class="alert alert-success"><span class="glyphicon glyphicon-saved"></span> You have answered this question earlier, but you can <em>reanswer</em>.</span></div>
+    <div class="alert alert-success">You have <strong>answered</strong> this question earlier, but you can <strong><em>reanswer</em></strong>.</div>
   }
   <h2>@poll.description</h2>
   <form id="user-response" name="user-response" method="post" action="@routes.ResponsesController.create(poll.id.get, false)">

@@ -9,7 +9,9 @@ define(function (require) {
     // see: https://github.com/rogeliog/learn-flight-navigation-menu-demo/blob/master/app/js/component/ui/menu_title.js
     this.responseUpdateHandler = function (e, data) {
       // visually indicate handles are valid or invalid
-      $(".alert").text("Your choice has been updated successfully.");
+      $(".alert").hide("fast");
+      $(".alert").html("<span class='glyphicon glyphicon-saved'></span> Your answer has been <strong>updated successfully.</strong>");
+      $(".alert").show("fast");
     }
 
     this.submitUserResponse = function (e) {
