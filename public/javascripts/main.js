@@ -17,20 +17,31 @@ require(
   ],
 
   function(compose, registry, advice, withLogging, debug) {
+    var $initData;
+    var initData;
+
       debug.enable(true);
       compose.mixin(registry, [advice.withAdvice, withLogging]);
 
       var pageComponentsToRequire = ['page/default'];
 
-      var initData = JSON.parse($("#init-data").val());
-      if (typeof(initData.pageName) != "undefined") {
-        pageComponentsToRequire.push('page/' + initData.pageName);
+      $initData = $('#init-data');
+      if ($initData.length > 0) {
+        initData = JSON.parse($initData.val());
+        if (typeof(initData.pageName) != "undefined") {
+          pageComponentsToRequire.push('page/' + initData.pageName);
+        }
       }
+
 
       require(pageComponentsToRequire, function() {
         var args = Array.prototype.slice.call(arguments, 0);
         args.forEach(function (pageInitializer) {
-          pageInitializer.call(initData);
+          if (typeof(initData) != "undefined") {
+            pageInitializer.call(initData);
+          } else {
+            pageInitializer();
+          }
         });
       });
   }
