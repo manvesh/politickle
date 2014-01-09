@@ -1,9 +1,9 @@
-@(poll: Poll, choices: Seq[Choice], ownerName: String, ownerTwitterHandle: String, user: Option[User])(implicit token: play.filters.csrf.CSRF.Token)
+@(poll: Poll, choices: Seq[Choice], ownerUser: User, user: Option[User], userResponse: Option[Response])(implicit token: play.filters.csrf.CSRF.Token)
 @import helper._
-@layout(poll.description,
-  Html("""
+
+@metaTags(poll: Poll, choices: Seq[Choice], ownerName: String, ownerTwitterHandle: String, ownerTwitterId: String) = {
     <meta name="twitter:card" content="politickle_card">
-    <meta name="twitter:politickle:asker:id" content="@ownerTwitterHandle">
+    <meta name="twitter:politickle:asker:id" content="@ownerTwitterId">
     <meta name="twitter:politickle:asker:name" content="@ownerName">
     <meta name="twitter:politickle:question" content="@poll.description">
     <meta name="twitter:politickle:selection" content="sel">
@@ -11,9 +11,10 @@
     <meta name="twitter:politickle:choice2:text" content="@choices.last.description">
     <meta name="twitter:politickle:url" content="http://cards-staging.twitter.com/cards/caps?@routes.ResponsesController.create(poll.id.get, true)">
     <meta name="twitter:politickle:politician2:id" content="111092283">
-    <meta name="twitter:politickle:politician2:name" content="@@@WeWork">
-        """)
-) {
+    <meta name="twitter:politickle:politician2:name" content="@@WeWork">
+}
+
+@layout(poll.description, metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId)) {
 <dl>
   <h2>@poll.description</h2>
   @if(!poll.hashTag.isEmpty) {
@@ -22,7 +23,7 @@
   }
   <form method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
       <input name="poll_id" value="@poll.id" type="hidden" />
-      <div class="btn-group" data-toggle="buttons">
+      <div class="form-group btn-group" data-toggle="buttons">
       @for(choice <- choices) {
         <p>
         <label class="btn btn-default">
@@ -40,19 +41,20 @@
       <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter"></a>
       </p>
     } else {
-      <div class="input-group">
+      <div class="form-group input-group">
         <span class="input-group-addon">Add explanation</span>
         <input name="explanation" type="text" class="form-control" placeholder="...">
       </div>
       @CSRF.formField
-      <p>
-      <input class="btn btn-primary" type="submit" disabled value="Submit your answer">
+      <div class="form-group">
+      <input class="btn btn-primary" type="submit" value="Submit your answer">
+      </div>
       </p>
     }
   </form>
 
   <dt>Created by</dt>
-  <dd>@@@ownerTwitterHandle</dd>
+  <dd>@@@ownerUser.twitterHandle</dd>
     </p>
 </dl>
 }
