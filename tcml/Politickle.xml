@@ -235,7 +235,6 @@
           <style element="choices_container">invisible</style>
           <style element="failure_message_container">invisible</style>
           <style element="poll_image">visible</style>
-          <style element="totweet_text">visible</style>
         </applyStyles>
       </action>
       <action id="go_to_tweeted_submitted_state">
@@ -367,7 +366,6 @@
               <image class="chart_image">
                 <src>{{chart_image}}</src>
               </image>
-              <text id="totweet_text" visible="false">{{totweet}}</text>
             </container>
           </container>
 
