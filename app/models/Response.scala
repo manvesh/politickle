@@ -6,6 +6,7 @@ import play.api.db.slick.Config.driver.simple._
 import slick.lifted.{Join, MappedTypeMapper}
 import scala.slick.lifted.ForeignKeyAction
 import scala.slick.lifted.ColumnOption.DBType
+import play.Logger
 
 case class Response(
   id: Option[Long],
@@ -63,8 +64,10 @@ object Responses extends DAO {
   def findById(id: Long)(implicit s: Session): Option[Response] =
     Responses.byId(id).firstOption
 
-  def findByIdAndTwitterUserId(pollId: Long, twitterUserId: String)(implicit s: Session): Option[Response] =
+  def findByIdAndTwitterUserId(pollId: Long, twitterUserId: String)(implicit s: Session): Option[Response] = {
+    Logger.info(Query(Responses).filter(_.pollId === pollId).filter(_.twitterUserId === twitterUserId).selectStatement)
     Query(Responses).filter(_.pollId === pollId).filter(_.twitterUserId === twitterUserId).firstOption
+  }
 
   def count(implicit s: Session): Int =
     Query(Responses.length).first

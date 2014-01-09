@@ -25,7 +25,7 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
                           choices: Seq[ChoiceFormData],
                           pollTargets: Option[Seq[PollTargetFormData]])
   case class ChoiceFormData(description: String)
-  case class PollTargetFormData(twitterUserId: Long, handle: String)
+  case class PollTargetFormData(twitterUserId: Long, handle: Option[String])
 
   private val pollForm = Form(
     mapping(
@@ -39,7 +39,7 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
       "pollTargets" -> optional(seq(
         mapping(
           "twitterUserId" -> longNumber,
-          "handle" -> text
+          "handle" -> optional(text)
         )(PollTargetFormData.apply)(PollTargetFormData.unapply)
       ))
     )(PollFormData.apply)(PollFormData.unapply)
@@ -70,7 +70,7 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
             Ok(views.html.Polls.show(poll, choices, ownerUser, None, None)).withSession(session)
           } else {
             val userResponse = Responses.findByIdAndTwitterUserId(poll.id.get, userFromDB.get.twitterId)
-            Logger.info("UserResponse")
+            Logger.info("UserResponse is " + userResponse.toString + " for poll.id.get" + poll.id.get.toString + " and user " + userFromDB.get.twitterId)
             Ok(views.html.Polls.show(poll, choices, ownerUser, userFromDB, userResponse))
           }
         }

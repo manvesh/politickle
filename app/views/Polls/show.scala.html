@@ -22,7 +22,7 @@
     <dd>#@poll.hashTag</dd>
   }
   @if( userResponse.isDefined ) {
-    <span class="label label-default glyphicon glyphicon-saved"> You have answered this question.</span>
+    <div class="alert alert-success"><span class="glyphicon glyphicon-saved"></span> You have answered this question earlier, but you can <em>reanswer</em>.</span></div>
   }
   <form method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
       <input name="poll_id" value="@poll.id" type="hidden" />
@@ -30,7 +30,12 @@
       @for(choice <- choices) {
         <p>
         <label class="btn btn-default">
-          <input type="radio" name="choice_id" value="@choice.id"> @choice.description
+          <input type="radio" name="choice_id" value="@choice.id" @if(userResponse.isDefined && userResponse.get.choiceId == choice.id) {
+            "checked"
+          } else {
+            "foo"
+          }
+            > @choice.description
         </label>
         </p>
       }
