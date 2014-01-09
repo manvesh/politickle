@@ -23,9 +23,11 @@ require(
       require(
         [
           'page/home/default',
+          'page/poll/create'
         ], function(initializeDefault, initializePollCreate) {
 
         initializeDefault();
+        initializePollCreate();
       });
   }
 );
