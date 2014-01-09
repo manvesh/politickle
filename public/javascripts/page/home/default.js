@@ -16,4 +16,4 @@ define(function (require) {
       menuSectionData.attachTo(document)
     */
   }
-})
+});
