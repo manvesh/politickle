@@ -27,7 +27,7 @@
     </text>
     <text name="politickle_submit_url">
       <sources>
-        <metaTag>twitter:politickle:url</metaTag>
+        <metaTag>twitter:politickle:submiturl</metaTag>
       </sources>
     </text>
     <text name="selection">
