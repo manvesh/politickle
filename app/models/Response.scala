@@ -44,7 +44,7 @@ trait ResponseComponent {
 
     def updatedAt = column[Timestamp]("updated_at", O.Nullable)
 
-    def idx = index("IDX_UNIQUE_RESPONSE", (twitterUserId, pollId, choiceId), unique = true)
+    def idx = index("IDX_UNIQUE_RESPONSE", (twitterUserId, pollId), unique = true)
 
     def * = id.? ~ twitterUserId ~ pollId ~ choiceId ~ explanationText.? ~ createdAt.? ~ updatedAt.? <>(Response.apply _, Response.unapply _)
 
@@ -89,7 +89,7 @@ object Responses extends DAO {
     Page(result, page, offset, result.size)
   }
 
-  def insert(response: Response)(implicit s: Session) {
+  def insert(response: Response)(implicit s: Session) = {
     val responseToInsert = response.copy(createdAt = Some(currentTimestamp))
     Responses.autoInc.insert(
       responseToInsert.twitterUserId,
@@ -98,12 +98,19 @@ object Responses extends DAO {
       responseToInsert.explanationText,
       responseToInsert.createdAt,
       responseToInsert.updatedAt
-    )
+    ).asInstanceOf[Int]
   }
 
   def update(id: Long, response: Response)(implicit s: Session) {
     val responseToUpdate: Response = response.copy(Some(id), updatedAt = Some(currentTimestamp))
     Responses.where(_.id === id).update(responseToUpdate)
+  }
+
+  def upsert(response: Response)(implicit s: Session) {
+    findByIdAndTwitterUserId(response.pollId, response.twitterUserId) match {
+      case Some(existingResponse) => update(existingResponse.id.get, response)
+      case None => insert(response)
+    }
   }
 
   def delete(id: Long)(implicit s: Session) {

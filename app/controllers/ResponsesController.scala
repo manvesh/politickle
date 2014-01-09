@@ -45,7 +45,7 @@ object ResponsesController extends Controller with securesocial.core.SecureSocia
             BadRequest("Poll/Choice is invalid!")
           } else {
             val poll = Polls.findById(response.pollId)
-            Responses.insert(response)
+            Responses.upsert(response)
             val tweetDescription = poll.get.description + "My answer: " + choice.get.description
             val tweetString = ellipse(tweetDescription, 115) + pollUrl(response.pollId)
 
