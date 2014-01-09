@@ -35,3 +35,7 @@ GET     /polls/new                  controllers.PollsController.newPoll
 GET     /polls/:id                  controllers.PollsController.show(id: Long)
 POST    /polls                      controllers.PollsController.create
 POST    /polls/:id/responses        controllers.ResponsesController.create(id: Long, isCard: Boolean)
+
+#Twitter Actions
+GET     /twitter/users              controllers.TwitterActionsController.lookupUser()
+POST    /twitter/status             controllers.TwitterActionsController.postTweet()
