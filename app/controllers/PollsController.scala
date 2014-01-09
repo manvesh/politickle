@@ -65,12 +65,13 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
         case Some(poll) => {
           val ownerUser = Users.findById(poll.ownerId).get
           val choices = Choices.findByPollId(poll.id.get)
-
           if (userFromDB.isEmpty) {
             val session = request.session + ("original-url", request.uri)
-            Ok(views.html.Polls.show(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, None)).withSession(session)
+            Ok(views.html.Polls.show(poll, choices, ownerUser, None, None)).withSession(session)
           } else {
-            Ok(views.html.Polls.show(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, userFromDB))
+            val userResponse = Responses.findByIdAndTwitterUserId(poll.id.get, userFromDB.get.twitterId)
+            Logger.info("UserResponse")
+            Ok(views.html.Polls.show(poll, choices, ownerUser, userFromDB, userResponse))
           }
         }
         case _ => NotFound

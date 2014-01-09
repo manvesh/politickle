@@ -1,36 +1,38 @@
-@(poll: Poll, choices: Seq[Choice], ownerName: String, ownerTwitterHandle: String, user: Option[User])(implicit token: play.filters.csrf.CSRF.Token)
+@(poll: Poll, choices: Seq[Choice], ownerUser: User, user: Option[User], userResponse: Option[Response])(implicit token: play.filters.csrf.CSRF.Token)
 @import helper._
-@layout(poll.description,
-  Html("""
-    <meta name="twitter:card" content="politickle_card">
-    <meta name="twitter:politickle:asker:id" content="111092283">
-    <meta name="twitter:politickle:asker:name" content="vyas">
-    <meta name="twitter:politickle:receiver" content="mgadda">
-    <meta name="twitter:politickle:question" content="What do you think about obamacare?">
-    <meta name="twitter:politickle:selection" content="sel">
-    <meta name="twitter:politickle:choice1:text" content="good">
-    <meta name="twitter:politickle:choice2:text" content="bad">
-    <meta name="twitter:politickle:url" content="http://politickle.com">
-    <meta name="twitter:politickle:politician1:id" content="111092283">
-    <meta name="twitter:politickle:politician1:name" content="WeWork">
-    <meta name="twitter:politickle:politician2:id" content="111092283">
-    <meta name="twitter:politickle:politician2:name" content="WeWork">
 
-        """)
-) {
+@metaTags(poll: Poll, choices: Seq[Choice], ownerName: String, ownerTwitterHandle: String, ownerTwitterId: String) = {
+    <meta name="twitter:card" content="politickle_card">
+    <meta name="twitter:politickle:asker:id" content="@ownerTwitterId">
+    <meta name="twitter:politickle:asker:name" content="@ownerName">
+    <meta name="twitter:politickle:question" content="@poll.description">
+    <meta name="twitter:politickle:choice1:text" content="@choices.head.description">
+    <meta name="twitter:politickle:choice2:text" content="@choices.last.description">
+    <meta name="twitter:politickle:submiturl" content="http://cards-staging.twitter.com/cards/caps?@routes.ResponsesController.create(poll.id.get, true)">
+    <meta name="twitter:politickle:cardurl" content="http://cards-staging.twitter.com/cards/caps?@routes.PollsController.show(poll.id.get)">
+    <meta name="twitter:politickle:politician2:id" content="111092283">
+    <meta name="twitter:politickle:politician2:name" content="@@WeWork">
+}
+
+@layout(poll.description, metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId)) {
 <dl>
   <h2>@poll.description</h2>
   @if(!poll.hashTag.isEmpty) {
     <dt>Hash Tag</dt>
     <dd>#@poll.hashTag</dd>
   }
+  @if( userResponse.isDefined ) {
+    <span class="label label-default glyphicon glyphicon-saved"> You have answered this question.</span>
+  }
   <form method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
       <input name="poll_id" value="@poll.id" type="hidden" />
-      <div class="btn-group" data-toggle="buttons">
+      <div class="form-group btn-group" data-toggle="buttons">
       @for(choice <- choices) {
+        <p>
         <label class="btn btn-default">
           <input type="radio" name="choice_id" value="@choice.id"> @choice.description
         </label>
+        </p>
       }
       </div>
       <script type="text/javascript">
@@ -39,21 +41,23 @@
     @if( user.isEmpty ){
       <p>
      <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
-      <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter">
-      to answer this question </a>
+      <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter"></a>
       </p>
     } else {
-      <div class="input-group">
+      <div class="form-group input-group">
         <span class="input-group-addon">Add explanation</span>
         <input name="explanation" type="text" class="form-control" placeholder="...">
       </div>
       @CSRF.formField
-      <input type="submit" value="Submit your answer">
+      <div class="form-group">
+      <input class="btn btn-primary" type="submit" value="Submit your answer">
+      </div>
+      </p>
     }
   </form>
 
   <dt>Created by</dt>
-  <dd>@@@ownerTwitterHandle</dd>
+  <dd>@@@ownerUser.twitterHandle</dd>
     </p>
 </dl>
 }
