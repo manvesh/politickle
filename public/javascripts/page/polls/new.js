@@ -7,7 +7,7 @@ define(function (require) {
   return initialize;
 
   function initialize(initData) {
-    twitterHandleField.attachTo('input[name="pollTargetHandles"');
+    twitterHandleField.attachTo('input[name="pollTargetHandles"]');
     twitterHandleValidator.attachTo(document);
   }
 });

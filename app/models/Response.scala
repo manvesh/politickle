@@ -64,10 +64,8 @@ object Responses extends DAO {
   def findById(id: Long)(implicit s: Session): Option[Response] =
     Responses.byId(id).firstOption
 
-  def findByIdAndTwitterUserId(pollId: Long, twitterUserId: String)(implicit s: Session): Option[Response] = {
-    Logger.info(Query(Responses).filter(_.pollId === pollId).filter(_.twitterUserId === twitterUserId).selectStatement)
+  def findByIdAndTwitterUserId(pollId: Long, twitterUserId: String)(implicit s: Session): Option[Response] =
     Query(Responses).filter(_.pollId === pollId).filter(_.twitterUserId === twitterUserId).firstOption
-  }
 
   def count(implicit s: Session): Int =
     Query(Responses.length).first

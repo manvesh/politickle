@@ -10,23 +10,23 @@
     <meta name="twitter:politickle:choice2:text" content="@choices.last.description">
     <meta name="twitter:politickle:submiturl" content="http://cards-staging.twitter.com/cards/caps?@routes.ResponsesController.create(poll.id.get, true)">
     <meta name="twitter:politickle:cardurl" content="http://cards-staging.twitter.com/cards/caps?@routes.PollsController.show(poll.id.get)">
-    <meta name="twitter:politickle:politician2:id" content="111092283">
-    <meta name="twitter:politickle:politician2:name" content="@@WeWork">
+    <meta name="twitter:politickle:politician1:id" content="9651">
+    <meta name="twitter:politickle:politician1:name" content="cbrumelle">
+    <meta name="twitter:politickle:politician2:id" content="14877873">
+    <meta name="twitter:politickle:politician2:name" content="vyas">
 }
 
-@*
 @initData = {
   <input type="hidden" class="json-data" id="init-data" value='{"pageName": "polls/show"}'/>
 }
-*@
 
-@layout(title=poll.description, headContent=metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId)) {
+@layout(title=poll.description, headContent=metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId), initData=initData) {
 
   @if( userResponse.isDefined ) {
     <div class="alert alert-success"><span class="glyphicon glyphicon-saved"></span> You have answered this question earlier, but you can <em>reanswer</em>.</span></div>
   }
   <h2>@poll.description</h2>
-  <form method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
+  <form id="user-response" name="user-response" method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
       <input name="poll_id" value="@poll.id" type="hidden" />
       <div class="form-group btn-group" data-toggle="buttons">
       @for(choice <- choices) {
