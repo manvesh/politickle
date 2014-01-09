@@ -28,17 +28,20 @@
   <h2 id="poll-description">@poll.description</h2>
   <form id="user-response" name="user-response" method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
       <input name="poll_id" value="@poll.id" type="hidden" />
-      <div id="choice-btns" class="form-group btn-group" data-toggle="buttons">
-      @for(choice <- choices) {
-      <p>
-        <label class="btn btn-default">
-          <input type="radio" name="choice_id" id="choice_id_@choice.id" value="@choice.id" @if(userResponse.isDefined && userResponse.get.choiceId == choice.id.get) {
-            checked
-          }
-            > @choice.description
-        </label>
-      </p>
-      }
+      <div class="container">
+        <div id="choice-btns" class="col-md8 form-group btn-group" data-toggle="buttons">
+        @for(choice <- choices) {
+        <p>
+          <label class="btn btn-default">
+            <input type="radio" name="choice_id" id="choice_id_@choice.id" value="@choice.id" @if(userResponse.isDefined && userResponse.get.choiceId == choice.id.get) {
+              checked
+            }
+              > @choice.description
+          </label>
+        </p>
+        }
+        </div>
+        <div id="chart" class="col-md4 pull-right"></div>
       </div>
       @if( user.isEmpty ){
       <p>
@@ -59,7 +62,6 @@
       </p>
     }
   </form>
-  <div id="chart"></div>
   <br/>
   <h5>Poll was created by <br/> <a href="https://twitter.com/@ownerUser.twitterHandle">@@@ownerUser.twitterHandle</a></h5>
 }

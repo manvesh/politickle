@@ -22,8 +22,8 @@ define(function (require) {
     this.createPieChart = function (pieData) {
       var color = d3.scale.category20();
       $("#chart").html("");
-      var width = 600;
-      var height = 500
+      var width = 200;
+      var height = 100;
       var radius = Math.min(width, height) / 2;
 
       var svg = d3.select("#chart").append("svg")
