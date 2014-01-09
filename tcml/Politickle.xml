@@ -242,8 +242,7 @@
         onSuccess="show_spinner" 
         onFailure="submit_failure"
         >
-        <!-- todo change onRequestFailure to submit_failure -->
-        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="go_to_submitted_state">
+        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="submit_failure">
           <apiMethod>POST</apiMethod>
           <apiUrl>{{politickle_submit_url}}</apiUrl>
           <apiParameter>
