@@ -9,7 +9,7 @@ define(function (require) {
 
   return initialize;
 
-  function initialize() {
+  function initialize(initData) {
     /*
       menuTitleUI.attachTo('#menu');
       menuContentUI.attachTo('.menu-content');
