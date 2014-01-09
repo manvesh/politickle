@@ -3,19 +3,15 @@
 @layout(poll.description,
   Html("""
     <meta name="twitter:card" content="politickle_card">
-    <meta name="twitter:politickle:asker:id" content="111092283">
-    <meta name="twitter:politickle:asker:name" content="vyas">
-    <meta name="twitter:politickle:receiver" content="mgadda">
-    <meta name="twitter:politickle:question" content="What do you think about obamacare?">
+    <meta name="twitter:politickle:asker:id" content="@ownerTwitterHandle">
+    <meta name="twitter:politickle:asker:name" content="@ownerName">
+    <meta name="twitter:politickle:question" content="@poll.description">
     <meta name="twitter:politickle:selection" content="sel">
-    <meta name="twitter:politickle:choice1:text" content="good">
-    <meta name="twitter:politickle:choice2:text" content="bad">
-    <meta name="twitter:politickle:url" content="http://politickle.com">
-    <meta name="twitter:politickle:politician1:id" content="111092283">
-    <meta name="twitter:politickle:politician1:name" content="WeWork">
+    <meta name="twitter:politickle:choice1:text" content="@choices.head.description">
+    <meta name="twitter:politickle:choice2:text" content="@choices.last.description">
+    <meta name="twitter:politickle:url" content="http://cards-staging.twitter.com/cards/caps?@routes.ResponsesController.create(poll.id.get, true)">
     <meta name="twitter:politickle:politician2:id" content="111092283">
-    <meta name="twitter:politickle:politician2:name" content="WeWork">
-
+    <meta name="twitter:politickle:politician2:name" content="@@@WeWork">
         """)
 ) {
 <dl>
@@ -28,9 +24,11 @@
       <input name="poll_id" value="@poll.id" type="hidden" />
       <div class="btn-group" data-toggle="buttons">
       @for(choice <- choices) {
+        <p>
         <label class="btn btn-default">
           <input type="radio" name="choice_id" value="@choice.id"> @choice.description
         </label>
+        </p>
       }
       </div>
       <script type="text/javascript">
@@ -39,8 +37,7 @@
     @if( user.isEmpty ){
       <p>
      <a href="@securesocial.core.providers.utils.RoutesHelper.authenticate("twitter")">
-      <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter">
-      to answer this question </a>
+      <img src="@routes.Assets.at("images/sign-in-with-twitter-gray.png")" alt="Sign in with Twitter"></a>
       </p>
     } else {
       <div class="input-group">
@@ -48,7 +45,9 @@
         <input name="explanation" type="text" class="form-control" placeholder="...">
       </div>
       @CSRF.formField
-      <input type="submit" value="Submit your answer">
+      <p>
+      <input class="btn btn-primary" type="submit" disabled value="Submit your answer">
+      </p>
     }
   </form>
 
