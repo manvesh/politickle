@@ -30,9 +30,9 @@
         <metaTag>twitter:politickle:submiturl</metaTag>
       </sources>
     </text>
-    <text name="selection">
+    <text name="politickle_detailed_answer_url">
       <sources>
-        <metaTag>twitter:politickle:selection</metaTag>
+        <metaTag>twitter:politickle:detailed_answer_url</metaTag>
       </sources>
     </text>
     <text name="totweet">
@@ -45,12 +45,6 @@
         <metaTag>twitter:politickle:cardurl</metaTag>
       </sources>
     </text>
-
-    <url name="pollitickle_submit_url">
-      <sources>
-        <metaTag>twitter:pollitickle:submit:url</metaTag>
-      </sources>
-    </url>
     <user name="politician1">
       <sources>
         <metaTag>
@@ -86,7 +80,7 @@
         <fontSize>15</fontSize>
         <maxLines>1</maxLines>
       </style>
-      <style name="choices_container">
+      <style name="choices_container_style">
         <width>fill</width>
         <margin>5,5,5,5</margin>
       </style>
@@ -99,6 +93,7 @@
       <style name="choice_button_padder">
         <backgroundColor>#f5f8fa</backgroundColor>
         <borderWidth>1</borderWidth>
+        <cornerRadius>5</cornerRadius>
         <borderColor>#ccd6dd</borderColor>
         <width>fill</width>
         <horizontalAlign>middle</horizontalAlign>
@@ -110,6 +105,9 @@
         <margin>5,14,5,14</margin>
         <horizontalAlign>middle</horizontalAlign>
         <verticalAlign>middle</verticalAlign>
+      </style>
+      <style name="follow_up_button_padder_inner">
+        <width>fill</width>
       </style>
       <style name="choice_button_padder_inner" devices="iPad">
         <width>fill</width>
@@ -126,15 +124,8 @@
         <maxLines>1</maxLines>
         <overflow>ellipsis</overflow>
       </style>
-      <style name="answer_explanation_launcher">
-        <borderWidth>1.0</borderWidth>
-        <cornerRadius>1.0</cornerRadius>
-        <padding>5,5,5,5</padding>
-        <horizontalAlign>end</horizontalAlign>
-      </style>
       <style name="tweet_my_answer">
-        <padding>5,5,5,5</padding>
-        <horizontalAlign>start</horizontalAlign>
+        <fontSize>14</fontSize>
       </style>
       <style name="initial_form">
         <visibleChildIndex>0</visibleChildIndex>
@@ -170,10 +161,33 @@
       <style name="cta_text">
         <width>fit</width>
         <color>#55acee</color>
-        <fontSize>12</fontSize>
+        <fontSize>14</fontSize>
         <maxLines>1</maxLines>
         <fontBold>false</fontBold>
         <overflow>ellipsis</overflow>
+      </style>
+      <style name="follow_up_button_padder">
+        <backgroundColor>#f1f1f1</backgroundColor>
+        <borderWidth>1</borderWidth>
+        <backgroundGradient>0deg, #dddddd 1.0, #ffffff 0.0</backgroundGradient>
+        <cornerRadius>5</cornerRadius>
+        <borderColor>#cccccc</borderColor>
+        <width>fill</width>
+        <horizontalAlign>middle</horizontalAlign>
+        <verticalAlign>middle</verticalAlign>
+        <height>34</height>
+        <margin>5,5,5,5</margin>
+      </style>
+      <style name="follow_up_button_text">
+        <width>fit</width>
+        <color>#3366FF</color>
+        <fontSize>15</fontSize>
+        <maxLines>1</maxLines>
+        <fontBold>false</fontBold>
+        <overflow>ellipsis</overflow>
+      </style>
+      <style name="explanation_container">
+        <margin>10,0,0,0</margin>
       </style>
     </styles>
   
@@ -184,25 +198,42 @@
         onSuccess="show_spinner" 
         onFailure="submit_failure"
         >
-        <apiRequest onRequestSuccess="show_follow_up_buttons"  onRequestFailure="submit_failure">
+        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="submit_failure">
           <apiMethod>POST</apiMethod>
           <apiUrl>{{politickle_submit_url}}</apiUrl>
           <apiParameter>
-            <boundKey>{{selection}}</boundKey>
+            <key>selection</key>
             <boundValue>{{choice_one_text}}</boundValue>
           </apiParameter>
         </apiRequest>
       </action>
+      <action id="open_detailed_answer_page" >
+        <openUrl>
+          <tco>{{politickle_detailed_answer_url}}</tco>
+          <display>{{politickle_detailed_answer_url}}</display>
+        </openUrl>
+      </action>
+
 
       <action id="onload_visible_child_index">
         <applyStyles>
           <style element="unsubmitted_form">initial_form</style>
         </applyStyles>
       </action>
-      <action id="show_follow_up_buttons">
+      <action id="go_to_submitted_state">
         <applyStyles>
           <style element="unsubmitted_form">initial_form</style>
           <style element="follow_up_buttons">visible</style>
+          <style element="choices_container">invisible</style>
+          <style element="failure_message_container">invisible</style>
+        </applyStyles>
+      </action>
+      <action id="go_to_tweeted_submitted_state">
+        <applyStyles>
+          <style element="unsubmitted_form">initial_form</style>
+          <style element="tweet_my_answer_button">invisible</style>
+          <style element="choices_container">invisible</style>
+          <style element="failure_message_container">invisible</style>
         </applyStyles>
       </action>
       <action 
@@ -211,11 +242,12 @@
         onSuccess="show_spinner" 
         onFailure="submit_failure"
         >
-        <apiRequest onRequestSuccess="show_follow_up_buttons"  onRequestFailure="submit_failure">
+        <!-- todo change onRequestFailure to submit_failure -->
+        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="go_to_submitted_state">
           <apiMethod>POST</apiMethod>
           <apiUrl>{{politickle_submit_url}}</apiUrl>
           <apiParameter>
-            <boundKey>{{selection}}</boundKey>
+            <key>selection</key>
             <boundValue>{{choice_two_text}}</boundValue>
           </apiParameter>
         </apiRequest>
@@ -231,7 +263,7 @@
           <style element="failure_message_container">visible</style>
         </applyStyles>
       </action>
-      <action id="tweet_my_answer">
+      <action id="tweet_my_answer" onSuccess="go_to_tweeted_submitted_state">
         <composeTweet textId="TWEET_MY_ANSER_TEXT">
           My vote for {{card_url}} is {{totweet}
         </composeTweet>
@@ -268,7 +300,7 @@
                 class="question_text"
                 >{{question}}</text>
             </container>
-            <container class="choices_container">
+            <container id="choices_container" class="choices_container_style">
               <container class="choice_button_row">
                 <container class="choice_button_padder">
                   <container class="choice_button_padder_inner">
@@ -293,25 +325,27 @@
                   </container>
                 </container>
               </container>
+              <container width="fill" class="explanation_container" >
+                <container class="follow_up_button_padder" onTap="open_detailed_answer_page">
+                  <text 
+                    textId="ANSWER_WITH_EXPLANATION" 
+                    class="follow_up_button_text"
+                    >Answer with explanation</text>
+                </container>
+              </container>
             </container>
-            <container id="follow_up_buttons" >
-              <container class="tweet_my_answer" >
+            <container id="follow_up_buttons" visible="false" width="fill">
+              <container id="tweet_my_answer_button" class="follow_up_button_padder">
                 <text 
                   textId="TWEET_MY_ANSWER" 
                   onTap="tweet_my_answer"
-                  class="cta_text"
+                  class="follow_up_button_text"
                   >Tweet my answer</text>
               </container>
-              <container>
-                <text 
-                  textId="ANSWER_WITH_EXPLANATION" 
-                  class="cta_text"
-                  >Answer with explanation (politickle.com)</text>
-              </container>
-              <container >
+              <container class="follow_up_button_padder">
                 <text 
                   textId="ASK_POLITICIAN" 
-                  class="cta_text"
+                  class="follow_up_button_text"
                   onTap="choose_politician"
                   >Ask a politician</text>
               </container>
@@ -328,15 +362,29 @@
 
           <!-- State 2: Lead sent to the API. Waiting for response -->
           <container width="fill">
-            <text textId="CHOICE_POLITICIAN_TEXT">Choose a politician:</text>
-            <text 
-              textId="CHOICE_POLITICIAN_1"
-              onTap="ask_politician1"
-              >[1] --- {{politician1.screen_name}} --- </text>
-            <text 
-              textId="CHOICE_POLITICIAN_2"
-              onTap="ask_politician2"
-              >[2] --- {{politician2.screen_name}} --- </text>
+            <text textId="CHOICE_POLITICIAN_TEXT" class="title_text" >Choose a politician:</text>
+              <container class="choice_button_row">
+                <container class="choice_button_padder">
+                  <container class="choice_button_padder_inner">
+                    <text 
+                      textId="CHOICE_POLITICIAN_1"
+                      class="choice_text"
+                      onTap="ask_politician1"
+                      >[1] {{politician1.screen_name}} </text>
+                  </container>
+                </container>
+              </container>
+              <container class="choice_button_row">
+                <container class="choice_button_padder">
+                  <container class="choice_button_padder_inner">
+                    <text 
+                      textId="CHOICE_POLITICIAN_2"
+                      class="choice_text"
+                      onTap="ask_politician2"
+                      >[2] {{politician2.screen_name}} </text>
+                  </container>
+                </container>
+              </container>
           </container>
 
         </container>
