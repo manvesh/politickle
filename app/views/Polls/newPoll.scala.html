@@ -1,7 +1,11 @@
 @(pollForm: Form[PollsController.PollFormData])(implicit token: play.filters.csrf.CSRF.Token)
 @import helper._
 
-@layout("Create a new poll") {
+@initData = {
+  <input type="hidden" class="json-data" id="init-data" value='{"pageName": "polls/new"}'/>
+}
+
+@layout(title="Create a new poll", initData=initData) {
 <h2>Create Poll</h2>
 
   <form method="POST" role="form" class="form-horizontal" action="@routes.PollsController.create">
@@ -46,4 +50,5 @@
     </div>
 
   </form>
+
 }
