@@ -80,6 +80,9 @@
         <fontSize>14</fontSize>
         <fontBold>true</fontBold>
       </style>
+      <style name="chart_image">
+        <width>fill</width>
+      </style>
       <style name="question_text">
         <width>fill</width>
         <fontSize>15</fontSize>
@@ -360,8 +363,8 @@
             <container id="failure_message_container" width="fill" visible="false">
               <text id="failure_message" class="error" width="fill" textId="FAILURE_TO_SUBMIT">Failed to submit your vote.</text>
             </container>
-            <container id="poll_image" visible="false">
-              <image>
+            <container id="poll_image" visible="false" width="fill">
+              <image class="chart_image">
                 <src>{{chart_image}}</src>
               </image>
               <text id="totweet_text" visible="false">{{totweet}}</text>
