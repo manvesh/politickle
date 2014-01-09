@@ -29,7 +29,7 @@ trait PollTargetsComponent {
 
     def createdAt = column[Timestamp]("created_at", O.NotNull)
 
-    def updatedAt = column[Timestamp]("updated_at", O.NotNull)
+    def updatedAt = column[Timestamp]("updated_at", O.Nullable)
 
     def * = id.? ~ twitterUserId ~ pollId ~ createdAt.? ~ updatedAt.? <>(PollTarget.apply _, PollTarget.unapply _)
 

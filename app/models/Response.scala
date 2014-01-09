@@ -42,7 +42,7 @@ trait ResponseComponent {
 
     def createdAt = column[Timestamp]("created_at", O.NotNull)
 
-    def updatedAt = column[Timestamp]("updated_at", O.NotNull)
+    def updatedAt = column[Timestamp]("updated_at", O.Nullable)
 
     def idx = index("IDX_UNIQUE_RESPONSE", (twitterUserId, pollId, choiceId), unique = true)
 
