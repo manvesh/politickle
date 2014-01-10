@@ -8,7 +8,7 @@
 @layout(title="Create a new poll", initData=initData) {
 <h2>Create Poll</h2>
 
-  <form method="POST" role="form" class="form-horizontal" action="@routes.PollsController.create">
+  <form method="POST" role="form" id="new-poll" class="form-horizontal" action="@routes.PollsController.create">
     <div class="form-group">
       <label for="description" class="col-sm-2 control-label">Poll question</label>
       <div class="col-sm-10">
@@ -37,10 +37,6 @@
         <input type="text" class="form-control" name="pollTargetHandles" placeholder="@@MicheleBachmann @@HilaryClinton"/>
       </div>
     </div>
-
-    <!-- TODO: dynamically add these -->
-    <input type="hidden" name="pollTargets[0].twitterUserId" value="14244109" />
-    <input type="hidden" name="pollTargets[1].twitterUserId" value="18217624" />
 
     @CSRF.formField
     <div class="form-group">
