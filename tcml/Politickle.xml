@@ -198,6 +198,9 @@
         <margin>10,0,0,0</margin>
         <horizontalAlign>end</horizontalAlign>
       </style>
+      <style name="asker_container">
+        <fontBold>true</fontBold>
+      </style>
     </styles>
   
     <actions>
@@ -301,10 +304,6 @@
           <container width="fill">
             <container width="fill">
               <text 
-                textId="TITLE"
-                class="title_text"
-                >@{{asker.screen_name}} asks @{{politician1.screen_name}} and @{{politician2.screen_name}}</text>
-              <text 
                 textId="QUESTION"
                 class="question_text"
                 >{{question}}</text>
@@ -333,6 +332,12 @@
                       >[B] {{choice_two_text}}</text>
                   </container>
                 </container>
+              </container>
+              <container class="asker_container" width="fill">
+                <text 
+                  textId="TITLE"
+                  class="title_text"
+                  >Question from @{{asker.screen_name}} for @{{politician1.screen_name}} and @{{politician2.screen_name}}</text>
               </container>
               <container width="fill" class="explanation_container" >
                 <container onTap="open_detailed_answer_page">
