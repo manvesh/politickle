@@ -30,9 +30,24 @@
         <metaTag>twitter:politickle:choice1:text</metaTag>
       </sources>
     </text>
+    <text name="choice_one_id">
+      <sources>
+        <metaTag>twitter:politickle:choice1:id</metaTag>
+      </sources>
+    </text>
     <text name="choice_two_text">
       <sources>
         <metaTag>twitter:politickle:choice2:text</metaTag>
+      </sources>
+    </text>
+    <text name="choice_two_id">
+      <sources>
+        <metaTag>twitter:politickle:choicew:id</metaTag>
+      </sources>
+    </text>
+    <text name="question_id">
+      <sources>
+        <metaTag>twitter:politickle:question:id</metaTag>
       </sources>
     </text>
     <text name="politickle_submit_url">
@@ -128,7 +143,7 @@
         <horizontalAlign>start</horizontalAlign>
         <width>fill</width>
         <color>#55acee</color>
-        <fontSize>13</fontSize>
+        <fontSize>15</fontSize>
         <maxLines>1</maxLines>
         <overflow>ellipsis</overflow>
       </style>
@@ -215,7 +230,11 @@
           <apiUrl>{{politickle_submit_url}}</apiUrl>
           <apiParameter>
             <key>selection</key>
-            <boundValue>{{choice_one_text}}</boundValue>
+            <boundValue>{{choice_one_id}}</boundValue>
+          </apiParameter>
+          <apiParameter>
+            <key>question_id</key>
+            <boundValue>{{question_id}}</boundValue>
           </apiParameter>
         </apiRequest>
       </action>
@@ -260,7 +279,11 @@
           <apiUrl>{{politickle_submit_url}}</apiUrl>
           <apiParameter>
             <key>selection</key>
-            <boundValue>{{choice_two_text}}</boundValue>
+            <boundValue>{{choice_two_id}}</boundValue>
+          </apiParameter>
+          <apiParameter>
+            <key>question_id</key>
+            <boundValue>{{question_id}}</boundValue>
           </apiParameter>
         </apiRequest>
       </action>
