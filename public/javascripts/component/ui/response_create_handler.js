@@ -22,8 +22,8 @@ define(function (require) {
     this.createPieChart = function (pieData) {
       var color = d3.scale.category20();
       $("#chart").html("");
-      var width = 200;
-      var height = 150;
+      var width = 100;
+      var height = 100;
       var radius = Math.min(width, height) / 2;
 
       var svg = d3.select("#chart").append("svg")
@@ -33,8 +33,8 @@ define(function (require) {
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
       var arc = d3.svg.arc()
-        .innerRadius(radius - 100)
-        .outerRadius(radius - 20);
+        .innerRadius(radius - radius/3)
+        .outerRadius(radius - radius/6);
 
       function arcTween(a) {
         var i = d3.interpolate(this._current, a);
@@ -65,8 +65,9 @@ define(function (require) {
       $("span.response_count").remove();
       pieData.forEach(function (ea, idx) {
         var $label = $("input#choice_id_"+ea.choiceId).parent("label");
-        $label.css("border-color", color(idx)).css("border-width", "3px");
-        $label.append("<span class='response_count'><em>("+ ea.count +")</em></span>");
+        var $appendElement = $("<span class='response_count'><em>"+ ea.count +"</em></span>")
+          .css("background-color", color(idx)).css("border-width", "2px").css("padding", "2px 12px").css("border-radius", "3px");
+        $label.append($appendElement);
       });
     }
 
