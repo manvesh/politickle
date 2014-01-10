@@ -10,7 +10,7 @@ import play.api.data._
 import play.api.data.Forms._
 import java.sql.Timestamp
 import java.util.Date
-import play.api.db.slick.DBAction
+import play.api.db.slick._
 import play.api.Logger
 import twitter4j.conf.ConfigurationBuilder
 import twitter4j.{StatusUpdate, TwitterFactory}
@@ -21,6 +21,12 @@ import models.Response
 import controllers.ResponseData
 import models.Choice
 import play.api.libs.json.JsObject
+import securesocial.core.SecuredRequest
+import models.Response
+import play.api.libs.json.JsNumber
+import controllers.ResponseData
+import models.Choice
+import securesocial.core.SecuredRequest
 
 object ResponsesController extends Controller with securesocial.core.SecureSocial {
 
@@ -56,23 +62,26 @@ object ResponsesController extends Controller with securesocial.core.SecureSocia
           } else {
             val poll = Polls.findById(response.pollId)
             Responses.upsert(response)
-            val tweetDescription = poll.get.description + "My answer: " + choice.get.description
-            val tweetString = ellipse(tweetDescription, 115) + pollUrl(response.pollId)
-            val choiceCounts: Seq[(Long, Int, String)] = Choices.findByPollId(response.pollId).map { choice: Choice =>
-              (choice.id.get, Responses.countsPerPollIdAndChoiceId(response.pollId, choice.id.get), choice.description) }
+            val tweetDescription = poll.get.description + ". My answer: " + choice.get.description
+            //val tweetString = ellipse(tweetDescription, 115) + pollUrl(response.pollId)
+            val choiceCounts: Seq[(Long, Int, String)] = Choices.findByPollId(response.pollId).map {
+              choice: Choice =>
+                (choice.id.get, Responses.countsPerPollIdAndChoiceId(response.pollId, choice.id.get), choice.description)
+            }
             Logger.info("ResponseData : " + responseData.toString)
-             
-            val jsonResponse = 
+
+            val jsonResponse =
               if (isCard) {
-                  Json.obj(
-                    "totweet" -> CardApiHelper.getStringBinding(tweetString),
-                    "chart_image" -> GoogleChartHelper.getChartUrlImageBinding(choiceCounts))
+                Json.obj(
+                  "totweet" -> CardApiHelper.getStringBinding("I just answered a question on #politickle. You can do it too! " + routes.PollsController.show(id).absoluteURL(true)),
+                  "chart_image" -> GoogleChartHelper.getChartUrlImageBinding(choiceCounts))
               } else {
-                  Json.obj(
-                    "success" -> "true",
-                    "responses" -> choiceCounts.map { choiceCount =>
+                Json.obj(
+                  "success" -> "true",
+                  "responses" -> choiceCounts.map {
+                    choiceCount =>
                       Json.obj("choiceId" -> JsNumber(choiceCount._1), "count" -> JsNumber(choiceCount._2), "description" -> choiceCount._3)
-                    })
+                  })
               }
 
             Logger.debug("Json response : " + jsonResponse)
@@ -92,9 +101,6 @@ object ResponsesController extends Controller with securesocial.core.SecureSocia
     }
   }
 
-  def pollUrl(pollId: Long): String = {
-    "https://getpolitickle.com/polls/" + pollId
-  }
 }
 
 case class ResponseData(twitterUserId: String, pollId: Long, choiceId: Long, explanation: Option[String])
