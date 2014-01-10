@@ -38,7 +38,7 @@ class TwitterProvider(application: Application) extends OAuth1Provider(applicati
     try {
       val response = awaitResult(call)
       val me = response.json
-      val userId = (me \ Id).as[Int]
+      val userId = (me \ Id).as[Long]
       val name = (me \ Name).as[String]
       val profileImage = (me \ ProfileImage).asOpt[String]
       val screenName = (me \ ScreenName).as[String]
