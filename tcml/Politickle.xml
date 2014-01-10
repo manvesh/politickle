@@ -300,7 +300,7 @@
       </action>
       <action id="tweet_my_answer" onSuccess="go_to_tweeted_submitted_state">
         <composeTweet textId="TWEET_MY_ANSER_TEXT">
-          My vote for {{card_url}} is {{totweet}
+          My answer to {{card_url}} is {{totweet}}
         </composeTweet>
       </action>
       <action id="ask_politician1">
