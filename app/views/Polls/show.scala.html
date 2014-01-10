@@ -59,7 +59,7 @@
       } else {
       <div class="form-group input-group">
         <span class="input-group-addon">Add an explanation</span>
-        <textarea name="explanation" type="text" class="form-control" placeholder="..." value="@if(userResponse.isDefined){@userResponse.get.explanationText    }"></textarea>
+        <textarea name="explanation" type="text" class="form-control" placeholder="..." value="@if(userResponse.isDefined){@userResponse.get.explanationText}"></textarea>
       </div>
       @CSRF.formField
       <input name="twitter_id" type="hidden" value="@user.get.twitterId" >

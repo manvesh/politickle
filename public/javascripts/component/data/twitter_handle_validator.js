@@ -6,12 +6,23 @@ define(function (require) {
 
   function twitterHandleValidator() {
     this.validateHandles = function (e, data) {
-      // TODO: make request to https://api.twitter.com/1.1/users/lookup.json
-      // See: https://dev.twitter.com/docs/api/1.1/get/users/lookup
+      var requestData = {};
 
-      // On success:
-      this.trigger('dataHandlesValidated', {
-        users: {'@MicheleBachmann': 14244109, '@HilaryClinton': 18217624}
+      // Convert ["@a", "@b"] to {"handles[0]": "a", "handles[1]": "b"}
+      data.handles.forEach(function (handle, idx) {
+        requestData['handles[' + idx + ']'] = handle.replace(/@/, "");
+      });
+
+      $.ajax({
+        url: '/twitter/users',
+        dataType: 'json',
+        data: requestData,
+        success: function (data) {
+          console.log(data);
+          this.trigger('dataHandlesValidated', {
+            users: data
+          });
+        }.bind(this)
       });
     }
 
