@@ -1,7 +1,7 @@
-@(poll: Poll, choices: Seq[Choice], ownerUser: User, user: Option[User], userResponse: Option[Response])(implicit token: play.filters.csrf.CSRF.Token)
+@(poll: Poll, choices: Seq[Choice], targets: Seq[String], ownerUser: User, user: Option[User], userResponse: Option[Response], currentUrl: String)(implicit token: play.filters.csrf.CSRF.Token)
 @import helper._
 
-@metaTags(poll: Poll, choices: Seq[Choice], ownerName: String, ownerTwitterHandle: String, ownerTwitterId: String) = {
+@metaTags(poll: Poll, choices: Seq[Choice], ownerName: String, ownerTwitterHandle: String, ownerTwitterId: String, currentUrl: String) = {
     <meta name="twitter:card" content="com.politickle:politickle">
     <meta name="twitter:politickle:asker:id" content="@ownerTwitterId">
     <meta name="twitter:politickle:asker:name" content="@ownerName">
@@ -12,7 +12,7 @@
     <meta name="twitter:politickle:choice1:id" content="@choices.head.id">
     <meta name="twitter:politickle:choice2:id" content="@choices.last.id">
     <meta name="twitter:politickle:submiturl" content="https://politickle.herokuapp.com/polls/@poll.id/responses?isCard=true">
-    <meta name="twitter:politickle:cardurl" content="https://politickle.herokuapp.com/polls/@poll.id">
+    <meta name="twitter:politickle:cardurl" content="@currentUrl">
     <meta name="twitter:politickle:politician1:id" content="9651">
     <meta name="twitter:politickle:politician1:name" content="cbrumelle">
     <meta name="twitter:politickle:politician2:id" content="14877873">
@@ -35,11 +35,41 @@
   }
 }
 
-@layout(title=poll.description, headContent=metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId), initData=initData) {
+@tweetYourAnswer = {
+    @if( user.isDefined ){
+    <form class="form-inline poll-inline" id="tweet-response" name="tweet-response" method="post" action="@routes.TwitterActionsController.postTweet()">
+        <input name="tweet" type="hidden" class="form-control" placeholder="..." value="@tweetText">
+        @CSRF.formField
+
+        <div class="form-group input-group">
+            <input class="btn btn-primary" type="submit" value="Tweet your answer!">
+        </div>
+    </form>
+    }
+}
+
+@tweetText = {
+   @if(targets.equals(Nil)) {
+     I just answered a question on #politickle. You can do it too! @currentUrl
+   } else {
+     I just answered a question posed to @targets.mkString(" and ") on #politickle. You can do it too! @currentUrl
+   }
+}
+
+@layout(title=poll.description, headContent=metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId, currentUrl), initData=initData) {
+
+
+    <div id="newSubmission" class="alert alert-success hidden">
+        <span class='glyphicon glyphicon-saved'></span> You have <strong>answered</strong> successfully.
+        @tweetYourAnswer
+    </div>
 
   @if( userResponse.isDefined ) {
-    <div class="alert alert-success">You have <strong>answered</strong> this question earlier, but you can <strong><em>reanswer</em></strong>.</div>
+    <div id="existingSubmission" class="alert alert-success">You have <strong>answered</strong> this question earlier, but you can <strong><em>reanswer</em></strong>.
+        @tweetYourAnswer
+    </div>
   }
+
   <h2 id="poll-description">@poll.description</h2>
   <form id="user-response" name="user-response" method="post" action="@routes.ResponsesController.create(poll.id.get, false)">
       <input name="poll_id" value="@poll.id" type="hidden" />

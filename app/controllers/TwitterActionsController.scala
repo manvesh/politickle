@@ -19,7 +19,7 @@ import util.TwitterHelper
 import play.api.libs.json.Json
 import scala.collection.JavaConverters._
 import java.util.{List => JList}
-import twitter4j.User
+import twitter4j.{TwitterException, User}
 
 
 object TwitterActionsController extends Controller with securesocial.core.SecureSocial {
