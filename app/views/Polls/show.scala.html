@@ -5,9 +5,12 @@
     <meta name="twitter:card" content="com.politickle:politickle">
     <meta name="twitter:politickle:asker:id" content="@ownerTwitterId">
     <meta name="twitter:politickle:asker:name" content="@ownerName">
+    <meta name="twitter:politickle:question:id" content="@poll.id">
     <meta name="twitter:politickle:question" content="@poll.description">
     <meta name="twitter:politickle:choice1:text" content="@choices.head.description">
     <meta name="twitter:politickle:choice2:text" content="@choices.last.description">
+    <meta name="twitter:politickle:choice1:id" content="@choices.head.id">
+    <meta name="twitter:politickle:choice2:id" content="@choices.last.id">
     <meta name="twitter:politickle:submiturl" content="https://politickle.herokuapp.com/polls/@poll.id/responses?isCard=true">
     <meta name="twitter:politickle:cardurl" content="https://politickle.herokuapp.com/polls/@poll.id">
     <meta name="twitter:politickle:politician1:id" content="9651">
@@ -59,7 +62,7 @@
       } else {
       <div class="form-group input-group">
         <span class="input-group-addon">Add an explanation</span>
-        <textarea name="explanation" type="text" class="form-control" placeholder="..." value="@if(userResponse.isDefined){@userResponse.get.explanationText    }"></textarea>
+        <textarea name="explanation" type="text" class="form-control" placeholder="..." value="@if(userResponse.isDefined){@userResponse.get.explanationText}"></textarea>
       </div>
       @CSRF.formField
       <input name="twitter_id" type="hidden" value="@user.get.twitterId" >

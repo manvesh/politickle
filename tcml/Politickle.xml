@@ -216,6 +216,9 @@
       <style name="asker_container">
         <fontBold>true</fontBold>
       </style>
+      <style name="profile_link">
+        <color>#00bfff</color>
+      </style>
     </styles>
   
     <actions>
@@ -318,6 +321,15 @@
           <style element="unsubmitted_form">choose_politician_state</style>
         </applyStyles>
       </action>
+      <action id="open_asker_profile">
+        <openProfile>{{asker.id}}</openProfile>
+      </action>
+      <action id="open_politician1_profile">
+        <openProfile>{{politician1.id}}</openProfile>
+      </action>
+      <action id="open_politician2_profile">
+        <openProfile>{{politician2.id}}</openProfile>
+      </action>
     </actions>
 
     <roots>
@@ -360,7 +372,7 @@
                 <text 
                   textId="TITLE"
                   class="title_text"
-                  >Question from @{{asker.screen_name}} for @{{politician1.screen_name}} and @{{politician2.screen_name}}</text>
+                  >Question from <span onTap="open_asker_profile" class="profile_link">@{{asker.screen_name}}</span><span> for </span><span onTap="open_politician1_profile" class="profile_link">@{{politician1.screen_name}}</span><span> and @</span><span onTap="open_politician2_profile" class="profile_link">{{politician2.screen_name}}</span></text>
               </container>
               <container width="fill" class="explanation_container" >
                 <container onTap="open_detailed_answer_page">
