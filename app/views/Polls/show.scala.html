@@ -35,38 +35,53 @@
   }
 }
 
-@tweetYourAnswer = {
+@tweetYourAnswer(status: String, cta: String) = {
     @if( user.isDefined ){
     <form class="form-inline poll-inline" id="tweet-response" name="tweet-response" method="post" action="@routes.TwitterActionsController.postTweet()">
-        <input name="tweet" type="hidden" class="form-control" placeholder="..." value="@tweetText">
+        <input name="tweet" type="hidden" class="form-control" placeholder="..." value="@status">
         @CSRF.formField
 
         <div class="form-group input-group">
-            <input class="btn btn-primary" type="submit" value="Tweet your answer!">
+            <input class="btn btn-primary" type="submit" value="@cta">
         </div>
     </form>
     }
 }
 
 @tweetText = {
-   @if(targets.equals(Nil)) {
-     I just answered a question on #politickle. You can do it too! @currentUrl
-   } else {
-     I just answered a question posed to @targets.mkString(" and ") on #politickle. You can do it too! @currentUrl
-   }
+@if(targets.equals(Nil)) {
+        I just answered a question on #politickle. You can do it too! @currentUrl
+    } else {
+        I just answered a question posed to @targets.mkString(" and ") on #politickle. You can do it too! @currentUrl
+}
+}
+
+@tweetQuestionText = {
+    @if(targets.equals(Nil)) {
+        I would like you to answer a question that I created on #politickle. @currentUrl
+    } else {
+        I just created a question on #politickle for @targets.mkString(" and "). Would you like to answer? @currentUrl
+    }
 }
 
 @layout(title=poll.description, headContent=metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId, currentUrl), initData=initData) {
 
+    <div id="tweetFailure" class="alert alert-danger hidden">
+        Failed to post your tweet. Please try again later.
+    </div>
+
+    <div id="tweetSuccess" class="alert alert-success hidden">
+        Your tweet was successfully posted to your timeline!
+    </div>
 
     <div id="newSubmission" class="alert alert-success hidden">
         <span class='glyphicon glyphicon-saved'></span> You have <strong>answered</strong> successfully.
-        @tweetYourAnswer
+        @tweetYourAnswer(tweetText.body, "Tweet your answer!")
     </div>
 
   @if( userResponse.isDefined ) {
     <div id="existingSubmission" class="alert alert-success">You have <strong>answered</strong> this question earlier, but you can <strong><em>reanswer</em></strong>.
-        @tweetYourAnswer
+        @tweetYourAnswer(tweetText.body, "Tweet your answer!")
     </div>
   }
 
@@ -102,6 +117,8 @@
       </p>
     }
   </form>
+@tweetYourAnswer(tweetQuestionText.body, "Tweet the question!")
+
   <br/>
   <h5>Poll was created by <br/> <a href="https://twitter.com/@ownerUser.twitterHandle">@@@ownerUser.twitterHandle</a></h5>
 }

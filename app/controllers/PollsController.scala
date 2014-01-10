@@ -17,7 +17,7 @@ import securesocial.core.SecuredRequest
 import models.Poll
 import util.TwitterHelper
 import java.util.List
-import twitter4j.User
+import twitter4j.{TwitterException, User}
 import play.api.libs.json.Json
 import java.util.{List => JList}
 import scala.collection.JavaConverters._
@@ -90,16 +90,22 @@ object PollsController extends Controller with securesocial.core.SecureSocial {
 
                 val handles = twitterOption map {
                   twitter =>
-                    twitter.lookupUsers(targets.map(_.twitterUserId).toArray)
-                      .asInstanceOf[JList[User]].asScala map {
-                      user =>
-                        user.getScreenName()
+                    try {
+                      twitter.lookupUsers(targets.map(_.twitterUserId).toArray)
+                        .asInstanceOf[JList[User]].asScala map {
+                        user =>
+                          user.getScreenName()
+                      }
                     }
-                } getOrElse (Nil).map("@" + _)
+                    catch {
+                      case ex: TwitterException => Nil
+                    }
+                } getOrElse (Nil)
 
+                val mentions = handles.map("@" + _)
                 val userResponse = Responses.findByIdAndTwitterUserId(poll.id.get, userFromDB.get.twitterId)
                 Logger.info("UserResponse is " + userResponse.toString + " for poll.id.get" + poll.id.get.toString + " and user " + userFromDB.get.twitterId)
-                Ok(views.html.Polls.show(poll, choices, handles, ownerUser, userFromDB, userResponse, currentUrl))
+                Ok(views.html.Polls.show(poll, choices, mentions, ownerUser, userFromDB, userResponse, currentUrl))
               }
             }
             case _ => NotFound
