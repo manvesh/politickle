@@ -225,7 +225,7 @@
         onSuccess="show_spinner" 
         onFailure="submit_failure"
         >
-        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="submit_failure">
+        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="go_to_submitted_state">
           <apiMethod>POST</apiMethod>
           <apiUrl>{{politickle_submit_url}}</apiUrl>
           <apiParameter>
