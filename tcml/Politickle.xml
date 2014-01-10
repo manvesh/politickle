@@ -233,7 +233,7 @@
             <boundValue>{{choice_one_id}}</boundValue>
           </apiParameter>
           <apiParameter>
-            <key>question_id</key>
+            <key>poll_id</key>
             <boundValue>{{question_id}}</boundValue>
           </apiParameter>
         </apiRequest>
@@ -282,7 +282,7 @@
             <boundValue>{{choice_two_id}}</boundValue>
           </apiParameter>
           <apiParameter>
-            <key>question_id</key>
+            <key>poll_id</key>
             <boundValue>{{question_id}}</boundValue>
           </apiParameter>
         </apiRequest>
