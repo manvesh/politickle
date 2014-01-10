@@ -38,7 +38,7 @@ class TwitterProvider(application: Application) extends OAuth1Provider(applicati
     try {
       val response = awaitResult(call)
       val me = response.json
-      val userId = (me \ Id).as[Int]
+      val userId = (me \ Id).as[Long]
       val name = (me \ Name).as[String]
       val profileImage = (me \ ProfileImage).asOpt[String]
       val screenName = (me \ ScreenName).as[String]
@@ -60,17 +60,3 @@ object TwitterProvider {
   val ScreenName = "screen_name"
   val ProfileImage = "profile_image_url_https"
 }
-
-//case class TwitterUser(
-//  override val identityId: IdentityId,
-//  override val firstName: String,
-//  override val lastName: String,
-//  override val fullName: String,
-//  screenName: String,
-//  override val email: Option[String],
-//  override val avatarUrl: Option[String],
-//  override val authMethod: AuthenticationMethod,
-//  override val oAuth1Info: Option[OAuth1Info] = None,
-//  override val oAuth2Info: Option[OAuth2Info] = None,
-//  override val passwordInfo: Option[PasswordInfo] = None
-//) extends SocialUser(identityId, firstName, lastName, fullName, email, avatarUrl, authMethod, oAuth1Info, None, None)
