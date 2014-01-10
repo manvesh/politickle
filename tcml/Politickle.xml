@@ -10,6 +10,16 @@
         <whitelistSiteId/>
       </sources>
     </user>
+    <image name="chart_image">
+      <sources>
+        <metaTag>
+          <src>twitter:image</src>
+          <width>twitter:image:width</width>
+          <height>twitter:image:height</height>
+        </metaTag>
+      </sources>
+      <constraints desiredWidth="82" desiredHeight="38"/>
+    </image>
     <text name="question">
       <sources>
         <metaTag>twitter:politickle:question</metaTag>
@@ -20,9 +30,24 @@
         <metaTag>twitter:politickle:choice1:text</metaTag>
       </sources>
     </text>
+    <text name="choice_one_id">
+      <sources>
+        <metaTag>twitter:politickle:choice1:id</metaTag>
+      </sources>
+    </text>
     <text name="choice_two_text">
       <sources>
         <metaTag>twitter:politickle:choice2:text</metaTag>
+      </sources>
+    </text>
+    <text name="choice_two_id">
+      <sources>
+        <metaTag>twitter:politickle:choicew:id</metaTag>
+      </sources>
+    </text>
+    <text name="question_id">
+      <sources>
+        <metaTag>twitter:politickle:question:id</metaTag>
       </sources>
     </text>
     <text name="politickle_submit_url">
@@ -70,10 +95,13 @@
         <fontSize>14</fontSize>
         <fontBold>true</fontBold>
       </style>
+      <style name="chart_image">
+        <width>fill</width>
+      </style>
       <style name="question_text">
         <width>fill</width>
-        <fontSize>15</fontSize>
-        <maxLines>1</maxLines>
+        <fontSize>16</fontSize>
+        <fontBold>true</fontBold>
       </style>
       <style name="choices_container_style">
         <width>fill</width>
@@ -82,7 +110,7 @@
       <style name="choice_button_row">
         <layout>horizontal</layout>
         <width>fill</width>
-        <margin>0,0,0,4</margin>
+        <margin>0,0,8,4</margin>
         <verticalAlign>middle</verticalAlign>
        </style>
       <style name="choice_button_padder">
@@ -115,7 +143,7 @@
         <horizontalAlign>start</horizontalAlign>
         <width>fill</width>
         <color>#55acee</color>
-        <fontSize>13</fontSize>
+        <fontSize>15</fontSize>
         <maxLines>1</maxLines>
         <overflow>ellipsis</overflow>
       </style>
@@ -183,6 +211,10 @@
       </style>
       <style name="explanation_container">
         <margin>10,0,0,0</margin>
+        <horizontalAlign>end</horizontalAlign>
+      </style>
+      <style name="asker_container">
+        <fontBold>true</fontBold>
       </style>
     </styles>
   
@@ -191,14 +223,18 @@
         id="vote_action_1" 
         platforms="iPhone-5,iPad-5,Android-5,Webkit-5,Swift-5"
         onSuccess="show_spinner" 
-        onFailure="submit_failure"
+        onFailure="go_to_submitted_state"
         >
-        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="submit_failure">
+        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="go_to_submitted_state">
           <apiMethod>POST</apiMethod>
           <apiUrl>{{politickle_submit_url}}</apiUrl>
           <apiParameter>
             <key>selection</key>
-            <boundValue>{{choice_one_text}}</boundValue>
+            <boundValue>{{choice_one_id}}</boundValue>
+          </apiParameter>
+          <apiParameter>
+            <key>poll_id</key>
+            <boundValue>{{question_id}}</boundValue>
           </apiParameter>
         </apiRequest>
       </action>
@@ -221,6 +257,7 @@
           <style element="follow_up_buttons">visible</style>
           <style element="choices_container">invisible</style>
           <style element="failure_message_container">invisible</style>
+          <style element="poll_image">visible</style>
         </applyStyles>
       </action>
       <action id="go_to_tweeted_submitted_state">
@@ -242,7 +279,11 @@
           <apiUrl>{{politickle_submit_url}}</apiUrl>
           <apiParameter>
             <key>selection</key>
-            <boundValue>{{choice_two_text}}</boundValue>
+            <boundValue>{{choice_two_id}}</boundValue>
+          </apiParameter>
+          <apiParameter>
+            <key>poll_id</key>
+            <boundValue>{{question_id}}</boundValue>
           </apiParameter>
         </apiRequest>
       </action>
@@ -259,7 +300,7 @@
       </action>
       <action id="tweet_my_answer" onSuccess="go_to_tweeted_submitted_state">
         <composeTweet textId="TWEET_MY_ANSER_TEXT">
-          My vote for {{card_url}} is {{totweet}
+          My answer to {{card_url}} is {{totweet}}
         </composeTweet>
       </action>
       <action id="ask_politician1">
@@ -285,10 +326,6 @@
           <!-- State 0: Card rendered OR lead is submitted - waiting for response -->
           <container width="fill">
             <container width="fill">
-              <text 
-                textId="TITLE"
-                class="title_text"
-                >@{{asker.screen_name}} asks @{{politician1.screen_name}} and @{{politician2.screen_name}}</text>
               <text 
                 textId="QUESTION"
                 class="question_text"
@@ -319,8 +356,14 @@
                   </container>
                 </container>
               </container>
+              <container class="asker_container" width="fill">
+                <text 
+                  textId="TITLE"
+                  class="title_text"
+                  >Question from @{{asker.screen_name}} for @{{politician1.screen_name}} and @{{politician2.screen_name}}</text>
+              </container>
               <container width="fill" class="explanation_container" >
-                <container class="follow_up_button_padder" onTap="open_detailed_answer_page">
+                <container onTap="open_detailed_answer_page">
                   <text 
                     textId="ANSWER_WITH_EXPLANATION" 
                     class="follow_up_button_text"
@@ -343,9 +386,15 @@
                   onTap="choose_politician"
                   >Ask a politician</text>
               </container>
+
             </container>
             <container id="failure_message_container" width="fill" visible="false">
               <text id="failure_message" class="error" width="fill" textId="FAILURE_TO_SUBMIT">Failed to submit your vote.</text>
+            </container>
+            <container id="poll_image" visible="false" width="fill">
+              <image class="chart_image">
+                <src>{{chart_image}}</src>
+              </image>
             </container>
           </container>
 
