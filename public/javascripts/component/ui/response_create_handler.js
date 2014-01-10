@@ -20,6 +20,7 @@ define(function (require) {
     }
 
     this.createPieChart = function (pieData) {
+      if (!pieData) return;
       var color = d3.scale.category20();
       $("#chart").html("");
       var width = 100;

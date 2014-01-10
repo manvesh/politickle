@@ -8,7 +8,7 @@
     <meta name="twitter:politickle:question" content="@poll.description">
     <meta name="twitter:politickle:choice1:text" content="@choices.head.description">
     <meta name="twitter:politickle:choice2:text" content="@choices.last.description">
-    <meta name="twitter:politickle:submiturl" content="https://politickle.herokuapp.com/polls/@poll.id/responses">
+    <meta name="twitter:politickle:submiturl" content="https://politickle.herokuapp.com/polls/@poll.id/responses?isCard=true">
     <meta name="twitter:politickle:cardurl" content="https://politickle.herokuapp.com/polls/@poll.id">
     <meta name="twitter:politickle:politician1:id" content="9651">
     <meta name="twitter:politickle:politician1:name" content="cbrumelle">
@@ -18,6 +18,18 @@
 
 @initData = {
   <input type="hidden" class="json-data" id="init-data" value='{"pageName": "polls/show"}'/>
+}
+
+@choicesRadioButton(choice: Choice, userResponse: Option[Response]) = {
+  @if(userResponse.isDefined && userResponse.get.choiceId == choice.id.get) {
+  <label class="btn btn-default active">
+    <input type="radio" name="choice_id" id="choice_id_@choice.id" value="@choice.id" checked > @choice.description
+  </label>
+  } else {
+  <label class="btn btn-default">
+    <input type="radio" name="choice_id" id="choice_id_@choice.id" value="@choice.id"> @choice.description
+  </label>
+  }
 }
 
 @layout(title=poll.description, headContent=metaTags(poll, choices, ownerUser.twitterName, ownerUser.twitterHandle.get, ownerUser.twitterId), initData=initData) {
@@ -32,12 +44,7 @@
         <div id="choice-btns" class="col-md8 form-group btn-group" data-toggle="buttons">
         @for(choice <- choices) {
         <p>
-          <label class="btn btn-default">
-            <input type="radio" name="choice_id" id="choice_id_@choice.id" value="@choice.id" @if(userResponse.isDefined && userResponse.get.choiceId == choice.id.get) {
-              checked
-            }
-              > @choice.description
-          </label>
+          @choicesRadioButton(choice, userResponse)
         </p>
         }
         </div>

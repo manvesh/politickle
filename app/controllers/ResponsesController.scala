@@ -70,9 +70,9 @@ object ResponsesController extends Controller with securesocial.core.SecureSocia
               } else {
                   Json.obj(
                     "success" -> "true",
-                    "data" -> Json.arr(choiceCounts.map { choiceCount =>
-                      Json.obj(choiceCount._1.toString -> Json.obj("count" -> JsNumber(choiceCount._2), "description" -> choiceCount._3))
-                    }))
+                    "responses" -> choiceCounts.map { choiceCount =>
+                      Json.obj("choiceId" -> JsNumber(choiceCount._1), "count" -> JsNumber(choiceCount._2), "description" -> choiceCount._3)
+                    })
               }
 
             Logger.debug("Json response : " + jsonResponse)
