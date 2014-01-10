@@ -302,7 +302,7 @@
         </applyStyles>
       </action>
       <action id="tweet_my_answer" onSuccess="go_to_tweeted_submitted_state">
-        <composeTweet textId="TWEET_MY_ANSER_TEXT">{{totweet}}</composeTweet>
+        <composeTweet textId="TWEET_MY_ANSER_TEXT">.@{{politician1.screen_name}}, @{{politician2.screen_name}} - {{totweet}}</composeTweet>
       </action>
       <action id="ask_politician1">
         <composeTweet textId="ASK_POLITICIAN_TEXT1">.@{{politician1.screen_name}} - I have a question for you. Would you like to answer? {{card_url}}</composeTweet>
