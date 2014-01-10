@@ -22,7 +22,7 @@ define(function (require) {
       var handlesStr = this.$node.val();
       // If the string has content and it's not only spaces
       if (handlesStr.length > 0 && handlesStr.trim().length > 0) {
-        this.trigger('uiNeedsHandlesValidated', {handles: handlesStr.trim().split(/\s+/)});
+        this.trigger('uiNeedsHandlesValidated', {handles: handlesStr.trim().split(/[ ,]+/)});
       }
     };
 
