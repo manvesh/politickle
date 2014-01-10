@@ -223,7 +223,7 @@
         id="vote_action_1" 
         platforms="iPhone-5,iPad-5,Android-5,Webkit-5,Swift-5"
         onSuccess="show_spinner" 
-        onFailure="submit_failure"
+        onFailure="go_to_submitted_state"
         >
         <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="go_to_submitted_state">
           <apiMethod>POST</apiMethod>
