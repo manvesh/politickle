@@ -372,7 +372,7 @@
                 <text 
                   textId="TITLE"
                   class="title_text"
-                  >Question from <span onTap="open_asker_profile" class="profile_link">@{{asker.screen_name}}</span><span> for </span><span onTap="open_politician1_profile" class="profile_link">@{{politician1.screen_name}}</span><span> and @</span><span onTap="open_politician2_profile" class="profile_link">{{politician2.screen_name}}</span></text>
+                  >Question from <span onTap="open_asker_profile" class="profile_link">@{{asker.screen_name}}</span><span> for </span><span onTap="open_politician1_profile" class="profile_link">@{{politician1.screen_name}}</span><span> and </span><span onTap="open_politician2_profile" class="profile_link">@{{politician2.screen_name}}</span></text>
               </container>
               <container width="fill" class="explanation_container" >
                 <container onTap="open_detailed_answer_page">
