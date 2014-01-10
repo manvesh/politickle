@@ -42,7 +42,7 @@
     </text>
     <text name="choice_two_id">
       <sources>
-        <metaTag>twitter:politickle:choicew:id</metaTag>
+        <metaTag>twitter:politickle:choice2:id</metaTag>
       </sources>
     </text>
     <text name="question_id">
@@ -232,7 +232,7 @@
           <apiMethod>POST</apiMethod>
           <apiUrl>{{politickle_submit_url}}</apiUrl>
           <apiParameter>
-            <key>selection</key>
+            <key>choice_id</key>
             <boundValue>{{choice_one_id}}</boundValue>
           </apiParameter>
           <apiParameter>
@@ -281,7 +281,7 @@
           <apiMethod>POST</apiMethod>
           <apiUrl>{{politickle_submit_url}}</apiUrl>
           <apiParameter>
-            <key>selection</key>
+            <key>choice_id</key>
             <boundValue>{{choice_two_id}}</boundValue>
           </apiParameter>
           <apiParameter>
