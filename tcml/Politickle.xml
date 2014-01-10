@@ -85,8 +85,8 @@
       </style>
       <style name="question_text">
         <width>fill</width>
-        <fontSize>15</fontSize>
-        <maxLines>1</maxLines>
+        <fontSize>16</fontSize>
+        <fontBold>true</fontBold>
       </style>
       <style name="choices_container_style">
         <width>fill</width>
@@ -95,7 +95,7 @@
       <style name="choice_button_row">
         <layout>horizontal</layout>
         <width>fill</width>
-        <margin>0,0,0,4</margin>
+        <margin>0,0,8,4</margin>
         <verticalAlign>middle</verticalAlign>
        </style>
       <style name="choice_button_padder">
@@ -196,6 +196,7 @@
       </style>
       <style name="explanation_container">
         <margin>10,0,0,0</margin>
+        <horizontalAlign>end</horizontalAlign>
       </style>
     </styles>
   
@@ -334,7 +335,7 @@
                 </container>
               </container>
               <container width="fill" class="explanation_container" >
-                <container class="follow_up_button_padder" onTap="open_detailed_answer_page">
+                <container onTap="open_detailed_answer_page">
                   <text 
                     textId="ANSWER_WITH_EXPLANATION" 
                     class="follow_up_button_text"

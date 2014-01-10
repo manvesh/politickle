@@ -1,5 +1,6 @@
 package controllers
 
+import util.{CardApiHelper, GoogleChartHelper}
 import play.api.Play.current
 import play.api.mvc.{Action, Controller}
 import play.api.libs.json._
@@ -60,22 +61,23 @@ object ResponsesController extends Controller with securesocial.core.SecureSocia
             val choiceCounts: Seq[(Long, Int, String)] = Choices.findByPollId(response.pollId).map { choice: Choice =>
               (choice.id.get, Responses.countsPerPollIdAndChoiceId(response.pollId, choice.id.get), choice.description) }
             Logger.info("ResponseData : " + responseData.toString)
-            Ok(
+             
+            val jsonResponse = 
               if (isCard) {
-                Json.toJson(
-                  Map(
-                    "totweet" -> Map("type" -> "STRING", "string_value" -> tweetString)
-                  )
-                )
+                  Json.obj(
+                    "totweet" -> CardApiHelper.getStringBinding(tweetString),
+                    "chart_image" -> GoogleChartHelper.getChartUrlImageBinding(choiceCounts))
               } else {
-                Json.obj(
-                  "success" -> "true",
-                  "responses" -> choiceCounts.map { choiceCount =>
-                    Json.obj("choiceId" -> JsNumber(choiceCount._1), "count" -> JsNumber(choiceCount._2), "description" -> choiceCount._3)
-                  }
-                )
+                  Json.obj(
+                    "success" -> "true",
+                    "data" -> Json.arr(choiceCounts.map { choiceCount =>
+                      Json.obj(choiceCount._1.toString -> Json.obj("count" -> JsNumber(choiceCount._2), "description" -> choiceCount._3))
+                    }))
               }
-            ).as("application/json")
+
+            Logger.debug("Json response : " + jsonResponse)
+
+            Ok(jsonResponse).as("application/json")
           }
       }
   }
