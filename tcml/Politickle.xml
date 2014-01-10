@@ -30,9 +30,24 @@
         <metaTag>twitter:politickle:choice1:text</metaTag>
       </sources>
     </text>
+    <text name="choice_one_id">
+      <sources>
+        <metaTag>twitter:politickle:choice1:id</metaTag>
+      </sources>
+    </text>
     <text name="choice_two_text">
       <sources>
         <metaTag>twitter:politickle:choice2:text</metaTag>
+      </sources>
+    </text>
+    <text name="choice_two_id">
+      <sources>
+        <metaTag>twitter:politickle:choicew:id</metaTag>
+      </sources>
+    </text>
+    <text name="question_id">
+      <sources>
+        <metaTag>twitter:politickle:question:id</metaTag>
       </sources>
     </text>
     <text name="politickle_submit_url">
@@ -128,7 +143,7 @@
         <horizontalAlign>start</horizontalAlign>
         <width>fill</width>
         <color>#55acee</color>
-        <fontSize>13</fontSize>
+        <fontSize>15</fontSize>
         <maxLines>1</maxLines>
         <overflow>ellipsis</overflow>
       </style>
@@ -198,6 +213,9 @@
         <margin>10,0,0,0</margin>
         <horizontalAlign>end</horizontalAlign>
       </style>
+      <style name="asker_container">
+        <fontBold>true</fontBold>
+      </style>
     </styles>
   
     <actions>
@@ -207,12 +225,16 @@
         onSuccess="show_spinner" 
         onFailure="submit_failure"
         >
-        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="submit_failure">
+        <apiRequest onRequestSuccess="go_to_submitted_state"  onRequestFailure="go_to_submitted_state">
           <apiMethod>POST</apiMethod>
           <apiUrl>{{politickle_submit_url}}</apiUrl>
           <apiParameter>
             <key>selection</key>
-            <boundValue>{{choice_one_text}}</boundValue>
+            <boundValue>{{choice_one_id}}</boundValue>
+          </apiParameter>
+          <apiParameter>
+            <key>poll_id</key>
+            <boundValue>{{question_id}}</boundValue>
           </apiParameter>
         </apiRequest>
       </action>
@@ -257,7 +279,11 @@
           <apiUrl>{{politickle_submit_url}}</apiUrl>
           <apiParameter>
             <key>selection</key>
-            <boundValue>{{choice_two_text}}</boundValue>
+            <boundValue>{{choice_two_id}}</boundValue>
+          </apiParameter>
+          <apiParameter>
+            <key>poll_id</key>
+            <boundValue>{{question_id}}</boundValue>
           </apiParameter>
         </apiRequest>
       </action>
@@ -301,10 +327,6 @@
           <container width="fill">
             <container width="fill">
               <text 
-                textId="TITLE"
-                class="title_text"
-                >@{{asker.screen_name}} asks @{{politician1.screen_name}} and @{{politician2.screen_name}}</text>
-              <text 
                 textId="QUESTION"
                 class="question_text"
                 >{{question}}</text>
@@ -333,6 +355,12 @@
                       >[B] {{choice_two_text}}</text>
                   </container>
                 </container>
+              </container>
+              <container class="asker_container" width="fill">
+                <text 
+                  textId="TITLE"
+                  class="title_text"
+                  >Question from @{{asker.screen_name}} for @{{politician1.screen_name}} and @{{politician2.screen_name}}</text>
               </container>
               <container width="fill" class="explanation_container" >
                 <container onTap="open_detailed_answer_page">
